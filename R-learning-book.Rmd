@@ -1,0 +1,71 @@
+---
+title: "R learning-book"
+author: "xsl"
+date: "2020/11/16"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+-this note from the <R in Action, Second edition>, and train myself.
+
+### 1.Introduce
+
+-some useful website
+
+■ some code about this book
+www.manning.com/RinActionSecondEdition
+www.github.com/kabacoff/RiA2
+■ the web of author
+www.statmethods.net
+
+
+-why use it?
+  -data analysis
+  -data visualization
+
+-the procedure of data science
+■ Accessing the data (getting the data into the application from multiple sources)
+■ Cleaning the data (coding missing data, fixing or deleting miscoded data, transforming variables into more useful formats)
+■ Annotating the data (in order to remember what each piece represents)
+■ Summarizing the data (getting descriptive statistics to help characterize the
+data)
+■ Visualizing the data (because a picture really is worth a thousand words)
+■ Modeling the data (uncovering relationships and testing hypotheses)
+■ Preparing the results (creating publication-quality tables and graphs)
+
+-the process of data analization
+  -import data
+  -prepare,explore,and clean data
+  -fit a statistical model
+  -evaluate the model fit
+  -cross-validate the model
+  -evaluate model prediction on new data
+  -produce report
+
+-about R
+ -R is a case-sensitive, interpreted language.
+ -R uses the symbol <- for assignments.
+ -You can also reverse the assignment direction.
+ -Comments are preceded by the # symbol. 
+
+
+### 2.Data structures
+#### 2.1 scalars
+-Scalars are one-element vectors. They’re used to hold constants.
+#### 2.2 vectors
+-Vectors are one-dimensional arrays that can hold numeric data, character data, or logical data. 
+-The combine function c() is used to form the vector.
+-the data in a vector must be only one type or mode (numeric, character, or logical).You can’t mix modes in the same vector.
+-The colon operator used to generates a sequence of numbers.
+-You can refer to elements of a vector using a numeric vector of positions within brackets. 
+#### 2.3 matrics
+
+#### 2.4 arrays
+#### 2.5 data frames
+#### 2.6 list
+  

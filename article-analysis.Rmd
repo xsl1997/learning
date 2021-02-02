@@ -1,0 +1,21 @@
+---
+title: "article-analysis"
+author: "xsl"
+date: "2020/12/5"
+output: pdf_document
+---
+
+# 2020年12月5日
+
+- 学习：PRISMA (Preferred Reporting Items for Systematic Reviews and Meta-Analyses)用以文献分析
+
+# 2020年12月12日
+
+- 因子分析最好用检验性因子分析
+
+- 可借鉴此篇文章的文献综述(全篇文献综述依靠一个核心论点)
+
+
+
+
+

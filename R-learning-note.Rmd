@@ -1,0 +1,2400 @@
+---
+title: "R learn"
+author: "xsl"
+date: "2020/10/7"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# R 语言学习
+
+- 补《概率论》、《统计学》、《计量经济学》
+
+```{r}
+# install.packages(c("tidyr","dplyr"))
+library(knitr)
+library(rmarkdown)
+library(rvest)
+library(tidyverse)
+library(dplyr)
+library(readr)
+library(reshape2)
+```
+
+
+常用学习的R网站
+
+- Google
+
+- Rblogger
+
+- quickR
+
+- stackoverflow
+
+
+
+## 1. 区别EXCEL
+- EXCEL能用鼠标进行操作，而R大多是用代码操作，因此R往往用于处理大数据。
+
+- 数据透视表需要学习
+
+
+## 2. R语言基础及快捷键
+```{r}
+#此为组块，敲代码区域，用“#”来在代码中注释，运行代码为ctrl+enter
+```
+### 2.1 R语言基础
+
+- 左上窗口：代码窗口，用于打开脚本文件（R Script、R Markdown）
+
+- 左下窗口：R的工作台，用于显示运行结果
+
+- 右上窗口：环境和历史记录，当前运行空间中有哪些对象
+
+- 右下窗口：功能窗口，重点Package，安装包及已安装的包
+
+### 2.2 快捷键学习
+
+- Alt+shift+k 显示Rstudio中所有快捷操作
+
+- ctrl+Alt+i 显示出组块
+
+- ctrl+O 打开文件
+
+- ctrl+enter run
+
+- ctrl+↑ 查找历史记录
+
+- tab 自动补齐
+
+- esc 中止操作
+
+## 3. R扩展包安装
+
+### 3.1 在线安装（推荐）
+
+- **多个包同时安装**：利用`pacman`包同时可以安装多个拓展包，还可以忽略已经安装的包，其实`install.package(c(A,B,C))`同样可以安装多个包，但是不会忽略已安装的包
+
+- install.packages("安装包的名称")
+
+- 可以解决包与包之间的依赖关系，一般一条命令即可完成安装，可在工作台输入或者在组块中输入运行。
+
+- 注意括号内要加引号，不然就会显示：Error in install.packages : 找不到对象'readxl'。
+
+```{r}
+install.packages("readxl")
+require("readxl")
+
+install.packages("pacmap")
+pacman::p_load(XML,rvest,jiebaR,dplyr,stringr)
+```
+
+- 有时镜像站点无法访问，需要修改默认的镜像站点，可以修改R的Rprofell.set（音译，可能有误，需要问）这个文件，修改里面的set a merro选项
+
+- libPaths() 可以显示库所在的位置
+
+```{r}
+.libPaths()
+```
+
+- library() 可以显示库里有哪些安装包，也就是功能窗口中的Packages中显示的拓展包。绝大部分拓展包可以采用在线安装的方式安装包及依赖包。
+
+```{r}
+library()
+```
+
+### 3.2 源代码安装
+
+- 服务器上为了安全，无法访问网络，就只能采用源代码安装，在R的站点或镜像站点去下载安装包的源代码，还需要一起下载依赖的包，一起传到服务器上。（比较麻烦，不学）
+
+
+
+## 4. R包的使用
+
+- library（R包名字) 
+
+- 安装好R包后，用此公式可以直接调用R包了，也不需要加引号。
+
+- R软件本身包括（R基础包）：
+
+- base（与R基础功能相关的函数都在此包中)
+
+- datasets（用于存放R内置的数据集）
+
+- utils（R语言工具函数）
+
+- grDevices(基于base和graphics的应用设备，与绘图设备相关的函数都在此包中）
+
+- graphics（基于base图形的R函数，R默认绘图函数都放在此包中)
+
+- stats(用于存放与统计相关的函数）
+
+- methond（R对象一般定义方法，增加一些编程工具）
+
+- splines、stats4、tcltk
+
+
+
+## 5. 获取帮助
+
+### 5.1 函数的帮助
+
+- 要会查阅R软件的帮助文档，有2个方式
+
+- 在菜单栏中点开帮助栏选项
+
+- help.函数 即可查阅该函数的信息，从reference中快速了解此函数的方法
+
+- help(函数)
+
+- ?函数
+
+- args(函数) 快速了解函数参数，而不查阅函数全部文档
+
+- example("函数") 要注意函数是普通函数还是绘图函数
+
+- demo(函数) 会列出R的一些案例图
+
+- help.search() 本地模糊搜索
+
+- ??函数 模糊搜索
+
+- apropos("关键字") 找出所有包含关键字的内容，后可加限制
+
+- RSiteSearch("关键字")
+
+- rsec.org网站 专门用来搜索R相关的内容，需要能访问谷歌
+
+- 选中函数，按下F1，出来帮助菜单
+
+
+
+### 5.2 拓展包的帮助
+
+- help(package="函数") 查看R安装的拓展包的帮助文档
+
+- vignette(函数) 查看拓展包简介、教程、开发文档等，并非每个安装包都有此文档
+
+- 有些情况下明明已经安装了某个拓展包，但使用help命令却搜索不到相关资料，这是因为还未载入此包，需要先用library函数载入拓展包。
+
+```{r}
+help.start()
+help(sum)
+?plot
+args(plot)
+example("mean")
+example("hist")
+demo(graphics)
+help.search("heatmap")
+??ggplot2
+apropos("dog")
+apropos("sum",mod ="function")
+RSiteSearch("matlab")
+
+help(package ="ggplot2")
+vignette("base")
+```
+
+
+
+## 6. 内置数据集
+
+- R软件内置数据集，可用此进行学习和测试，很多数据集都是美国的数据
+
+- data() 可直接访问这些数据集
+
+- 直接数据这些数据集就可访问这些数据集
+
+- names(数据集) 可查看这些数据集的属性信息
+
+- state 开头的数据大多为美国50个州的数据
+
+- data.frame() 可将多个数据集构成一个数据框
+
+```{r}
+help(package="datasets")
+data()
+rivers
+names(euro)
+
+state<-data.frame(state.name,state.abb,state.area,state.center,state.division)
+state
+
+heatmap(volcano)
+```
+
+
+## 7. 数据结构
+
+> 数据结构是计算机存储、组织数据的方式。数据结构是指相互之间存在一种或多种特定关系的数据元素的集合
+
+$$标量、向量、矩阵、数组、数据框、列表$$
+
+
+### 7.1 一般编程数据结构
+
+- 普通数据结构：向量、标量、列表、数组、多维数组
+
+- 特殊数据结构：perl中的哈希、python中的字典、C语言中的指针等
+
+
+### 7.2 R中的数据类型
+
+- 数值型，数值可以用于直接计算，加减乘除。在输入中可以直接输入。
+
+- 字符串型，可以进行连接、转换、提取等。在输入中必须加引号，单双都行。
+
+- 逻辑型，真或者假。全部大写的TRUE或T，FALSE或F。
+
+- 日期型
+
+
+### 7.3 R的数据结构
+
+- 统称为对象：object。它是指可以赋值给变量的任何事物，包括常量、数据结构、函数、甚至图形，对象都拥有某种模式，描述了此对象是如何存储的，以及某个类。
+
+- R中数据结构（对象）：向量、标量；矩阵；数组；列表；数据框；因子；时间序列等。
+
+
+
+## 8. 向量（重要）
+
+### 8.1 向量基本概念
+
+- 向量，vector，是R中最重要的一个概念，它是构成其他数据结构的基础。R中的向量概念和数学中的向量概念不同，类似于数学上集合的概念，由一个或多个元素所构成。
+
+- 向量其实是用于存储数值型、字符型或者逻辑型的一维数组。
+
+- 用函数C来创建向量。C代表concatenate连接，也可以理解为收集collect，或者合并combine。
+
+- 可构建数列。
+* 可用seq函数生成等差序列，设置等差值（参数by表示）、输出个数（length.out)等，此函数只能设置一个参数。
+* 可用rep函数设置重复序列,rep(被重复的数值或者向量，重复次数)。
+
+- 向量所有元素必须是同一类型，都是数值型或者都是字符型等等，混合会被转化同一类型。
+
+- R是向量化编程。
+
+```{r}
+x<-c(1,2,3,4,5)
+x
+
+y<-c("one","two","three")
+y
+
+z<-c(TRUE,T,FALSE,F)
+z
+
+c(1:100)
+seq(from=1,to=100,by=2)
+seq(from=1,to=100,length.out=10)
+
+rep(2,5)
+rep(x,5)
+rep(x,each=5)
+rep(x,each=5,times=2)  #x这个序列，每个元素5次，这个命令2次
+
+a=2
+b="hello"
+c=TRUE
+a;b;c  #为一个矩阵
+
+m<-c(1,2,3,4,5)
+n<-c(6,7,8,9,10)
+m*2+n  #m这个向量中每个元素×2，再+n这个向量。这是区别于其他编程语言的地方，向量化编程，效率高。
+
+rep(x,c(2,4,6,1,3))  #用c来控制x这个向量中每个元素重复的次数
+```
+
+
+### 8.2 向量索引
+
+- 访问向量中的元素（索引）：向量是一个集合，访问其中的元素才能对向量进行运算，访问向量元素即索引。
+
+- R中索引方法
+
+*正（负）整数索引：根据元素在集合中的位置来访问。
+
+*逻辑向量索引：逻辑值为TRUE则被输出,FALSE不输出，R中最重要的访问数据的方式，相当于IF条件语句循环访问元素，条件为真则输出，反之不输出。
+
+*名称索引
+
+```{r}
+#正（负）整数索引
+x<-c(1:100)  #1到100的等差序列
+length(x)  #x中包含100个元素
+x[1]  #[]中括号角标的方法与其他编程语言中访问数组的方式类似，但R中元素的位置从1开始，而非0开始，因为0不是正整数
+x[-19]  #可以使用负整数来进行索引，表示访问除了这个元素的其他所有元素，即除了19的其他99个元素
+x[c(4:18)]  #输出x中第4个到第18个元素
+x[c(1,23,23,48,29,72)]  #索引向量中可以没有顺序，也可以多次访问同一元素
+x[-2,3,4]  #报错，既要输出除了第2位的所有元素，还只要输出第3和4位元素，矛盾
+
+#逻辑向量进行向量索引
+y<-c(1:10)
+y[c(T,T,T,T,T,F,F,F,F,F)]  #逻辑值的个数不一定要与向量元素个数相等，可以循环使用，如下
+y[c(T)]
+y[c(T,F)]  #按照顺序进行判断，相当于一个[T,F]的向量进行循环
+y[c(T,F,F)]
+y[c(T,T,T,T,T,T,T,T,T,T,T)]  #逻辑值＞元素值，多的即为缺失值
+y[y>5 & y<9]  #不仅可以在索引中直接给出逻辑值，还可以直接写条件判断表达式
+
+#字符串向量
+z<-c("one","two","three","four","five")
+"one" %in% z  # %in% 表示元素是否在向量中，类似perl中的哈希或python中的字典判断
+z[z %in% c("one","two")]
+z %in% c("one","two")
+k<- z %in% c("one","two")
+z[k]
+
+#利用元素名称进行访问
+A<-c(1:5)
+names(A) <- c("one","two","three","four","five")
+A
+names(A)  #names() 函数常用于复杂数据中，用此函数来通过查询表头或变量来找这一列数据
+```
+
+
+### 8.3 修改向量和修改数据
+
+- 添加向量：直接利用向量构建函数C来构建一个额外的向量即可
+
+```{r}
+#添加向量
+
+#添加一个元素
+x<-c(1:100)
+x[101]<-101
+x
+
+
+#添加多个元素
+v<-1:3
+v[c(4,5,6,7,8,9,10)]<-c(4,5,6,7,8,9,10)
+v
+
+
+#向量中间插入一个元素
+append(x=v,values=99,after=5)  #在原有v向量的第5个元素后插入值99，形成一个新向量x
+
+
+#删除向量
+rm(v)  #删除整个向量
+
+y<-c(1:10)
+y[-c(1:3)]  
+y<-y[-c(1:3)]#删除向量中的某个元素，可用负整数索引来操作
+
+#给向量中某一元素赋一新的值
+y[3]<-15
+y[4]<-"one"
+```
+
+
+
+### 8.4 向量运算
+
+- 向量的赋值、加减乘除等，向量元素个数相等，里面对应的元素进行加减乘除
+
+- **或^为幂运算
+
+- %%求余运算
+
+- %/%整除运算
+
+- 一个向量与另一个向量元素个数不等，其中比较短的向量会循环使用
+
+- 初等函数：abs()、
+
+```{r}
+#元素个数相等
+x<-c(6:10)
+y<-c(1:5)
+x+y
+x-y
+x*y
+x/y
+x**y
+x%%y
+x%/%y
+
+#元素个数不等，短向量中的元素循环使用
+x<-c(1:5)
+z<-c(1,2,3)
+x+z   #1+1，2+2，3+3，4+1，5+2
+x-z
+x*z
+x/z
+
+#逻辑运算，每一个向量都会出现逻辑值
+x<-c(1:5)
+x>2
+c(1,2,6) %in% x
+
+#判断两个向量是否相等用==，而不是=，这是赋值的意思
+x<-c(1:5)
+y<-c(4:8)
+x==y  #x中的1与y中的4对应判断是否相等
+
+x<-c(1:5)
+y=c(1:8)
+x==y
+
+c(1,2,3) %in% c(2,2,3,5,6,7)
+
+#初等函数
+x<-c(1,-1,-3)
+abs(x)  #abs()函数返回向量绝对值
+sqrt(x)  #计算向量平方根
+log(16)  #自然对数
+log(16,base=2)  #对数函数，base是底数
+log10(10)  #log底数(真数)
+exp(x)  #计算向量中每个元素的指数
+ceiling(c(-2.3,3.1415))  #返回不小于x的最小整数
+floor(c(-2.3,3.1415))  #返回不大于x的最大整数
+trunc(c(-2.3,3.1415))  #返回整数部分
+round(c(-2.3,3.1415))  #四舍五入(取整数部分)
+round(c(-2.3,3.1415),digits=2)  #两位数的四舍五入
+signif(c(-2.3,3.1415),digits = 2)  #保留有效数字，保留两位有效数字
+sin(x)
+cos(x)
+
+#统计函数
+v<-1:100
+sum(v)
+max(v)
+min(v)
+mean(v)
+var(v)
+round(var(v))
+round(var(v),digits = 2)
+prod(v)  #返回向量连乘的积
+median(v)  #计算中位数
+quantile(v)  #求分位数
+quantile(v,c(0.4,0.5,0.7))  #求确定的某个分位数
+
+#which函数：有时不仅关注元素的值，还关注元素的位置，用此函数返回索引值
+t<-c(1,4,2,5,8,-6,3.1,9)
+which.max(t)  #向量中最大值的位置，即元素8的位置为第5位
+which.min(t)
+which(t==5)  #t=5是第4位数8
+which(t>5)  #t>5是第5位数8和第8位数9
+t[which(t>5)]  #返回索引对应的具体值
+```
+
+
+
+
+## 9. 矩阵与数组
+
+- 矩阵(Matrix)是一个按照长方阵列排列的复数或实数集合。向量是一维的，而矩阵是二维的，需要有行和列。
+
+- 在R中，矩阵是有维数的向量，这里的矩阵元素可以是数值型、字符型或逻辑型，但是每个元素必须都拥有相同的模式，这个和向量一致。
+
+- R数据集中有一些矩阵例子
+
+- heatmap(矩阵) 可以直接绘制这个矩阵的热图
+
+- matrix() 创建矩阵
+
+- dim() 为向量添加维数来创建矩阵
+
+- array() 构建矩阵
+
+```{r}
+iris3
+state.x77
+heatmap(state.x77)
+
+#创建矩阵
+x<-1:20
+m<-matrix(x,nrow = 4,ncol = 5)  #x这个向量分为4行5列，要注意4行5列刚好分配好20个元素
+#或如下方式创建矩阵
+m<-matrix(1:20,4,5)
+m
+
+m<-matrix(1:20,4,byrow = T)  #byrow函数选择按行排列(T)还是按列排列(F)
+m
+
+m <- matrix(1:20,4,byrow = F)
+m
+
+#定义两个变量来定义矩阵行和列的名字
+rnames <- c("R1","R2","R3","R4")
+cnames <- c("C1","C2","C3","C4","C5")
+dimnames(m) <- list(rnames,cnames)  #将行和列的名字赋给矩阵，且用到了list列表这个数据结构
+m
+
+#dim() 是dimensions函数的简称，可以显示向量的维数
+x <- c(1:20)
+dim(x)
+dim(x) <- c(4,5)  #将x这个向量分成4×5的矩阵
+x
+
+x <- 1:20
+dim(x) <- c(2,2,5)  #将x这个向量分成5个2×2的矩阵
+x
+
+#array() 构建矩阵
+?array
+dim1 <- c("A1","A2")
+dim2 <- c("B1","B2","B3")
+dim3 <- c("C1","C2","C3","C4")
+z <- array(1:24,c(2,3,4),dimnames = list(dim1,dim2,dim3))
+z
+
+
+#矩阵的索引
+m<-matrix(1:20,4,byrow = T) 
+m[1,2]  #第1行第2列的元素
+m[2,c(2,3,4)]  #第2行，2，3，4列
+m[2,]  #第2行
+m[,2]  #第2列
+m[-1,2]  #负数表示去除的意思
+m[c(2:4),c(2:3)]  #子集，2-4行，2-3列形成的子集
+dimnames(m) = list(rnames,cnames)  #如果矩阵行列具有名称，也可用名称来访问矩阵
+m
+
+head(state.x77)
+state.x77["Income"]
+state.x77[,"Income"]
+state.x77["Alabama"]
+state.x77["Alabama",]
+
+#矩阵运算：和线性代数中矩阵运算一样，对应位置的元素进行计算
+A <- m+1
+A <- m*2
+A <- m+m
+A
+n <- matrix(20:39,4,5)
+m+n
+t <- matrix(2:21,4,5)
+n*t  #矩阵内积
+n %*% t  #矩阵外积   大于符号
+
+
+#直接计算矩阵的函数
+#方法1：用上述方法将行、列提出来变成新矩阵进行加减
+#方法2：直接用一些函数来进行计算
+colSums(m)  #列相加
+rowSums(m)  #行相加
+colMeans(m)  #列平均值
+rowMeans(m)  #行均值
+diag(n)  #主对角矩阵（从左往右）
+t(n)  #对矩阵进行转置，还换了排列规则
+n <- matrix(n,5,byrow = F)  #只转换数字
+n
+```
+
+
+
+
+## 10. 数据框
+
+- R分析数据，首先应该先存储为数据框的结构
+
+- 想要用R分析数据，就将每组数据建立一个向量，再用data.frame函数将向量合并为数据框即可，但要注意各个向量的长度一致。
+
+- 数据框是R中最重要的一个数据结构，也是使用最多的数据结构，平时将数据结构转为数据框，再直接使用R的函数便可直接分析。
+
+- 数据框是一种表格式的结构，旨在模拟数据集。
+
+- 数据集通常是由数据构成的一个矩形数组，行表示观测（示例），列表示变量（属性）。
+
+- 数据框本质上是一个列表，列表中的元素是向量，这些向量构成数据框的列，但向量中的元素类型可以不同，可是字符型也可是数值型，每一列必须具有相同的长度且命名。
+
+- 数据库每一行其实是一个列表，可以包含多种数据结构。
+
+- 数据框第一行一般是表头，指明每一列（向量）的内容。
+
+- R内置的数据中有许多数据框
+
+```{r}
+iris
+mtcars
+rock
+
+#数据框可通过data.frame函数创建
+?data.frame
+state <- data.frame(state.name,state.abb,state.region,state.x77)
+```
+
+- 数据框的访问
+
+```{r}
+#通过索引访问
+state_1 <- state[1] # 默认索引为先确定列后确定行
+state[c(2,4)]  #输出第2和第4列
+
+#删除数据框部分列，用负索引
+state[-1]
+
+#use the name of row and col, can view the row and col
+state[,"state.abb"]  #remember the ","
+
+# $ (只能数据框数据使用)
+state$state.abb
+
+
+# attach()和with()函数取代$
+?attach  #加载数据框到R搜索目录中,这样访问数据框中元素直接输入列的名字即可，便不用使用$
+attach(mtcars)
+mpg
+?detach  #取消加载
+detach(mtcars)
+mpg
+
+?with
+with(mtcars,{mpg})
+
+#双中括号访问，访问的是向量，而非列表
+mtcars[["mpg"]]
+class(mtcars[["mpg"]])  # class()函数用来检验数据结构
+
+#example
+women
+plot(women$height,women$weight)
+lm(weight ~height, data = women)  #lm 函数进行线性回归，前面是Y变量，后面是X变量
+```
+
+
+
+
+
+## 11. 列表（可以存储混合数据类型）
+
+- 列表：用来存储很多内容的一个集合，在其它编程语言中，列表一般和数组是等同的，但在R语言中，列表是R中最复杂的一种数据结构。
+
+- 列表就是一些对象的有序集合。列表可以存储若干向量、矩阵、数据框，甚至其他列表的组合。
+
+- 列表在模式上与向量类似，都是一维数据集合。
+
+- 向量只能储存一种数据类型，列表中的对象可以是R中的任何数据结构，甚至是列表本身。
+
+```{r}
+#R数据集中的列表
+state.center
+
+#创建一个列表
+a <- 1:20  #向量
+b <- matrix(1:20,4)  #矩阵
+c <- mtcars  #数据框
+d <- "This is a test list"  #标量
+a/d
+(a/b/c)  #why?
+Alist <- list(a,b,c,d)
+Alist  #为什么c显示不出来？
+Alist <- list(first=a,second=b,third=c,forth=d)  #赋予名称
+str(Alist)
+
+#访问列表（通过索引）（三种方法）
+#索引
+Alist[1]  #访问列表第一列
+Alist[c(1,3,4)]  #一次访问多个列表元素需要在里面使用向量
+
+#名字访问
+state.center[c("x","y")]
+
+#dollar符访问(高效)
+Alist$first
+
+#双中括号访问
+Alist[1]
+Alist[[1]]
+#一个中括号输出的是列表的一个子集，还是一个列表,但两个中括号输出的是数据本身的类型，可用class函数进行检验
+class(Alist[1])
+class(Alist[[1]])
+
+#给列表赋值
+Alist[[5]] <- iris
+Alist
+
+#删除列表中的元素——负索引的方式或者将列表元素赋NULL值
+Alist[-5]
+Alist[[5]] <- NULL
+```
+
+
+
+## 12. 因子
+
+- 在R中，变量类型：名义型变量、有序型变量、连续型变量
+
+- 名义型变量和有序型变量被称为因子，factor。这些分类变量的可能值称为一个水平，level，而由这些水平值构成的向量就称为因子。
+
+- 因子的最大作用就是用于分类，将整个数据集的元素进行分类。
+
+- 因子的应用：计算频数、独立性检验、相关性检验、方差分析、主成分分析、因子分析等。
+
+```{r}
+#example
+mtcars  #其中cyl和am将这些元素进行分类
+mtcars$cyl
+table(mtcars$cyl)  #用table函数进行频数统计
+```
+
+- 如何将向量转换为因子，或者如何定义因子
+
+```{r}
+f <- factor(c("red","red","green","yellow"))  #名义变量做因子，factor(向量)
+f
+
+week <- factor(c("Mon","Fri","Thu","Wed","Mon","Fri","Sun"))  #有序变量做因子
+week
+
+week <- factor(c("Mon","Fri","Thu","Wed","Mon","Fri","Sun"), ordered = T ,levels = c("Mon","Tue","Wed","Thu","Fri","Sat","Sun"))  #输出因子水平是有了顺序
+week
+
+fcyl <- factor(mtcars$cyl)  #用factor()函数直接将一个向量转化为因子
+fcyl
+plot(mtcars$cyl)
+plot(factor(mtcars$cyl))
+
+num <- 1:100
+num
+cut(num,c(seq(0,100,10)))  #用cut函数将向量分组
+
+state.region  #R内置数据集中的因子集
+```
+
+
+## 13. 缺失数据
+
+### 13.1 缺失值计算、定位和简单处理
+
+- R中NA代表缺失值，用来存储缺失信息，表示没有，可能是任何值。
+
+- 但我们往往不想因为一个缺失值失去一组数据的价值，可用函数na.rm,是指意思是如果存在缺失值，则剔除缺失值，然后再计算mean或sum。
+
+```{r}
+a <- c(NA,1:22,NA,72:69,NA)
+?sum  #sum(..., na.rm = FALSE)
+sum(a,na.rm = TRUE)
+?mean  #mean(x, trim = 0, na.rm = FALSE, ...)
+mean(a,trim = 0,na.rm = TRUE)
+
+?is.na  #进行逻辑测试，如果数据集中包含NA，则在对应逻辑值的位置处显示为TRUE
+is.na(a)
+
+?na.omit  #na.fail(object,...),na.omit(object,...),na.exclude(object,...),na.pass(object, ...)
+b <- na.omit(a)  #attr是属性信息，第一个是缺失值所在的位置
+b
+sum(b)
+mean(b)
+#但如果是na.omit(数据框)，则把含缺失值的每行都删除掉。
+```
+
+### 13.2 R中处理缺失值包(此部分可以再进行深化)
+
+-识别缺失值：is.na(),!complete.cases(),VIM包(找不到)
+
+- 删除缺失值
+
+ **无效实例（行删除）：omit.na()
+
+ **有效实例（配对删除法）：一些函数有可用选项
+
+- 最大似然估计：mvmle包
+
+- 插补缺失值
+
+ **单个插补（简单）：Hmise包
+
+ **多重插补：Mi包，Mice包，amelia包，mitools包
+
+### 13.3 其他缺失数据
+
+- 缺失数据NaN，代表不可能的值
+
+- lnf表示无穷，分为正无穷lnf和负无穷lnf，代表无穷大和无穷小。
+
+- 用is.nan和is.infinite(1/0)分别识别不可能值和无穷值
+
+```{r}
+is.nan(0/0)
+is.infinite(1/0)
+is.infinite(-1/0)
+```
+
+### 13.4 不同缺失值的差别
+
+- NA是存在的值，但不知为多少
+
+- NaN是不存在的
+
+- lnf存在，是无穷大无穷小，但表示不可能的值
+
+
+
+## 14. 字符串
+
+### 14.1 正则表达式
+
+### 14.2 函数
+
+```{r}
+month.name  #字符串
+
+
+#统计字符串
+length(month.name)  #返回向量中元素的个数
+
+nchar("Hello World")  #统计每个字符串个数
+nchar(month.name)
+nchar(c(2,1,12,333))
+
+
+#合并字符串
+paste("hello world","hello school","hello today")  #将多个字符串合并为一个
+paste("hello world","hello school","hello today",sep="-")  #sep函数设置分隔符
+
+
+#合并字符串和向量
+names <- c("JOHN","LNN","JERRY")
+paste(names,"hello world")  #向量中每个元素与字符串合并
+
+
+#修饰字符串
+substr(x = month.name,start = 1,stop = 3)  #substr(x, start, stop)
+#substr函数的参数包括原始字符串，起始点，结束点，原始字符串通过函数返回起始点额结束点之间的字符串
+
+B <- substr(x = month.name,start = 1,stop = 3)
+toupper(B)  #将字符串转化为大写
+tolower(B)  #将字符串转化为小写
+?sub()
+gsub("^(\\w)", "\\U\\1", tolower(B), perl = T)  #将字符串转化为首字母大写
+#^表示首字母；\\w表示字符集的简写，代表所有小写字母；\\U\\表示转化为大写，1表示只转化1次，参数perl=True表示支持正则表达式
+gsub("^(\\w)", "\\L\\1", toupper(B), perl = T)  #将字符串转化为首字母小写
+
+
+#查找字符串的位置
+?grep()  #grep(pattern, x, ignore.case = FALSE, perl = FALSE, value = FALSE, fixed = FALSE, useBytes = FALSE, invert = FALSE)
+x <- c("A", "B", "A+","C", "AC")
+grep("A+", x, fixed = T)
+grep("A+", x, fixed = F)  #正则表达式：+表示可以匹配1~正无穷个A
+
+?match()  #match(x, table, nomatch = NA_integer_, incomparables = NULL),可以进行字符串匹配，但不支持正则表达式，没有grep函数功能强大
+#相当于%in%，包含于。
+match("AC",x)
+
+
+#分割字符串
+?strsplit  #返回的值是一个列表，而不是一个向量。
+path <- "/hello/world/,/this/is/a//learn//note///"
+strsplit(path, "/")
+strsplit(c(path, path), "/")  #一次分割两个路径
+
+
+#要生成字符串的所有组合（笛卡尔积）
+?outer
+face <- 1:13
+suit <- c("hello world","hello teacher","hello today")
+outer(face, suit, FUN = paste)  #FUN接一个函数,paste函数是连接字符串，合并字符串
+```
+
+
+
+## 15. 日期和时间
+
+- 时间序列分析
+
+*对时间序列的描述
+
+*利用前面的结果进行预测
+
+```{r}
+#R中的时间序列数据包
+sunspots  #1749-1831年西方国家太阳黑子的数量
+presidents  #1945-1974年美国总统支持率
+class(presidents)  #ts时间序列数据的简称
+airquality  #纽约1973年5-9月每天的空气质量情况
+class(airquality)  #data.frame数据框
+airmiles  #美国1937-1960年科学营收的时间序列数据，是一种专门的时间序列数据格式
+Sys.Date()  #查看当前系统时间
+class(Sys.Date())
+
+
+#将一个字符串类型变成一个日期类型
+a <- "2020-11-16"
+as.Date(a)
+class(a)  #character字符串
+as.Date(a, format = "%Y-%m-%d")
+class(as.Date(a, format = "%Y-%m-%d"))  #为什么不是"%Y-%M-%D"，查看strftime的格式化参数
+
+
+#创建连续的时间点
+seq(as.Date("2020-01-01"), as.Date("2020-11-16"), by = 5)
+
+#向量转化为时间序列
+?ts
+sales <- round(runif(48, min =50, max = 100))  #runif生成随机数，round取整
+ts(sales, start = c(2010, 01), end = c(2020, 01), frequency = 1) 
+ts(sales, start = c(2010, 01), end = c(2020, 11), frequency = 12)
+ts(sales, start = c(2010, 01), end = c(2020, 01), frequency = 4)
+#frequency,1为以年为单位，12为以月份为单位，4以季度为单位
+```
+
+
+
+## 16. 常见错误
+
+- 数据结构要有对应的格式，如向量有c，矩阵有matrix，数组有array等
+
+- 赋值符号 <-
+
+- R中使用函数一定要加括号，来与普通对象进行区分，对所有变量操作都需将变量放入括号
+
+- 安装R包时一定要加引号，否则搜索不到
+
+- 逗号用来分割集合内的元素，对矩阵和数据框进行索引时，取出行和列要注意加逗号
+
+- 注意一般加括号，索引才加中括号，还有双中括号访问问题，双中括号访问，访问的是向量，而非列表
+
+- 等号问题，一个等号是赋值，两个等号才是判断是否相等
+
+- 路径问题，在window系统中，路径使用反斜线\，而R将反斜线当成转译
+
+- R扩展包需要先载入
+
+```{r}
+x <- matrix(c(1:20,seq(1,12,3)),4,4)
+x
+m <- x[,2]
+m
+n <- x[2,]
+n
+```
+
+```{r}
+#当不明白具体意义时，可以再设置一个对照：此为一个4×4的矩阵，其中元素含有向量c中的1-10个元素，取1-12中步长为3的等差数列，按列进行排序
+a <- matrix(c(1:10,seq(1,12,3)),4,4)
+a
+```
+
+
+
+## 17. 获取数据
+
+1. R获取数据的三种途径
+
+- 利用`edit()`键盘输入数据（麻烦，但现在一般与爬虫结合起来，机器自动爬下数据，然后利用R存储到外部文件中)
+
+- 通过读取存储在外部文件上的数据
+
+a. txt,csv,xlsx,rds(`read_rds()`),zip,XML,SPSS,SAS,Stata,NetCDF,HDF5
+
+b. 从网页获取数据：Webscraping，要对应程序接口API：`readLines()`可将网页上的文字下载到一个R的字符向量中，然后可用`grep()`和`gsub()`等函数处理数据；对结构复杂的网页，可用`RCurl`和`XML`包来提取想要的信息。更多可参考网站[Programming with R](www.programmingr.com)中的”Websraping using readLines and RCurl"，[R readLines example](https://statisticsglobe.com/r-readlines-example)。要注意爬取网页要获取最稳定的网址(还需学习)，F12或鼠标右击检查查看网页代码。
+
+**NOTE**:
+
+a. 利用R读取的文件最好是进行处理后适合R使用的文件。即数据需要先进行预处理，最好先用SQL或Python进行统计，将统计结果导入到R中进行分析
+
+b. edit的等价写法：`mydata <- edit(mydata) `:` fix(mydata)`
+
+- 通过访问数据库系统来获取数据
+
+a. R提供了许多面向数据库管理系统的接口，包括MySQL数据库、Access数据库等（《R语言实战》中2.3.11节）
+
+b. ODBC是Open Database Connectivity,开放数据库连接，一般用于存储较大数据
+
+c. RODBC包来连接数据库
+
+```{r}
+#手动输入:edit()
+patientID <- c(1:4)
+admdate <- c("10/15/2009","11/01/2009","10/21/2009","10/28/2009")
+age <- c(25,34,28,52)
+diabetes <- c("type1","type2","type1","type1")
+status <- c("poor","improved","excellent","poor")
+data <- data.frame(patientID,admdate,age,diabetes,status)
+data
+
+
+
+
+
+data2 <- "
+age gender weight
+25 m 52
+34 m 65
+28 f 47
+52 f 69
+"
+data2 <- read.table(header = TRUE, text = data2)
+data2
+
+
+
+?edit  #自动调入一个允许手动输入数据的文本编辑器，但不能直接调用此函数，必须首先定义一个变量，然后用edit修改这个变量，不然没法保存
+
+data3 <- data.frame(patientID=character(0),admdate=character(0),age=numeric(),diabetes=character(),status=character())  #先定义变量，再给变量确定数据类型
+data3 <- edit(data3)  #弹出一个编辑框，可直接输入，也可复制粘贴
+fix(data3)  #data2 <- edit(data2)的等价写法
+data3
+
+
+#连接数据库，需要安装一些包 (《R语言实战》2.3.11)
+install.packages("RODBC")
+install.packages("DBI")
+
+# 网页爬取
+?readLines
+textweb <- readLines("http://www.imdb.com/chart/")  # 获取网页信息
+grep('Rank',textweb)  # 查找所需信息所在的行
+write.table(textweb,file = "C:/Users/Administrator/Desktop/textweb.txt") 
+
+
+pacman::p_load(RCurl,XML,rvest,jiebaR,dplyr,stringr)  # RCurl,XML用于爬取数据，jiebaR分词，dplyr数据处理，stringr数据类型转换和处理
+webdata <- NULL  # 创建空的数据集，用于存储数据
+
+
+```
+
+
+
+## 18. 读入文件(txt,csv,zip)
+
+1. `read.table()`可读取带分隔符的文件(.txt;.csv;)。
+
+ read.table("file name", header = FALSE, sep = ", \ . / ? 空格等",row.names, col.names, colClasses = c("character","numeric","NULL"), skip = 2, nrow = 2)
+- file是一个带分隔符的ASCII文本文件名称，文件名要加引号； 
+- header是一个表明首行是否包含了变量名的逻辑值（TRUE或FALSE），即第一行是设置为变量名还是观测值； 
+- sep用来指定分隔数据的分隔符，但一般逗号分割的是csv文件； 
+- row.names，col.names是两个可选参数，用以指定一个或多个表示行、列标识符的变量；
+- 默认地，`read.table()`把字符变量转化为因子，但可以用colClasses参数指定变量列的类型（字符串型、数值型、逻辑型、日期型），``；
+- 可使用skip和nrow来读取一个文件的任何部分，skip为跳过前面2行，nrow为读取2行，即结果为文件第3-4行数据；
+- **na.strings参数**用来处理缺失值，如果知道数据集中有缺失值，则用某个符号代表缺失值，可用此参数在读取数据时告诉R哪部分属于缺失值，被替换为NA。
+
+2. `read.xlsx()`读取xlsx文件
+
+- 相关拓展包（xlsx；xlsxjars、rJava；XLConnect；openxlsx）
+
+- `read.xlsx2()`读取大型工作簿
+
+```{r}
+#带分隔符的文本文件（.txt）
+?read.table
+read.table("learning-input.txt")  #默认读前10行
+x <- read.table("learning-input.txt")
+head(x, n=11)
+tail(x, n=2)  #可用函数查看首、尾想要的行数
+
+#也可使用文件的全路径导入，免得每次都把文件存到R所在文件夹中
+read.table("D:/R/mygit/learning/learning-input.txt")  #直接右键文件属性-位置，注意要将“\”修改为“/”
+
+#用read.table读取逗号分割的CSV文件，必须设置sep = ","，不设置则默认空格分割(.csv)，但可用read.csv直接读取。
+```
+
+
+
+
+## 19. 写入文件(txt,csv,zip)
+
+```{r}
+#将数据写入文本文件(.txt)
+?write  #将数据写入文本
+# Write.table(R中的文件,file = "输出的文件名，可以用路径模式",sep = "分隔符")
+# write.csv(R中的文件,file = "输出的文件名，可以用路径模式")
+?cat  #将数据写入屏幕
+x <- rivers
+cat(x)
+write.table(x,file = "x.txt")  #会直接在本地项目文件中建立x.txt文件
+getwd()  #可查询项目当前路径
+write.table(x,file = "C:/Users/Administrator/Desktop/x.txt")  #和读取文件一样，可直接写路径
+
+#其他文件类似，只用修改后缀即可
+write.table(x,file = "C:/Users/Administrator/Desktop/x.csv",sep = ",")  #没设定分隔符，就会以分隔符为空格，自动编了序号并和数据寸于同一格
+write.table(x,file = "C:/Users/Administrator/Desktop/x.xlsx")  #打不开文件
+
+#用R写入文件会自动给出行号，但再将此文件输入R进行分析又会多出一组行号，造成麻烦
+write.table(x,file = "C:/Users/Administrator/Desktop/x.csv",sep = ",",row.names = FALSE)
+#这样不用将R自动添加的行号写入读取的文件，但原文件自带的行号此方式无法处理，可使用负索引将文件第一列去除
+
+#append=TRUE，则将文件写入原文件末尾，FASLE则是清空原文件
+write.table(iris,file = "C:/Users/Administrator/Desktop/x.csv",sep = ",",row.names = FALSE,append = TRUE)
+
+#R可直接读取压缩文件，也能直接写成压缩文件，参考：https://blog.csdn.net/weixin_41929524/article/details/103738345
+?zip
+```
+
+
+
+
+## 20. 读写其他文件
+
+1. 读写EXCEL文件
+
+- 简单读取(单一sheet) 
+
+step1: 保存为txt,csv文件
+ 
+step2: read.csv("文件名")
+
+- 直接R包读取xlsx(需要配置JAVA)
+
+```{r}
+#利用XLConnect包读取Excel文件
+install.packages("XLConnect")
+library(XLConnect)
+loadWorkbook("文件名")
+readWorksheet(ex,1)  #第一个参数是要读取工作簿的名字，第二个参数是工作簿中具体的sheet编号
+edata <- readWorksheet(ex,1)  #保存为一个数据框
+head(edata)
+
+#利用XLConnect包写入Excel文件
+A <- loadWorkbook("file.xlsx", create = T)  #创建一个工作簿
+creatSheet(A, "Sheet 1")  #在工作簿中创建工作表
+writeWorksheet(A, data = mtcars, sheet = "Sheet 1")  #将数据保存到工作表
+saveWorkbook(A)  #将工作簿存储为一个Excel文件
+
+#上述四步可通过一个函数完成
+writeWorksheet("file name.xlsx", data = mtcars, sheet = "Sheet 1")
+
+#查看XLConnect包的介绍
+vignette("XLConnect")
+
+#单纯读写Excel文件，可用xlsx包
+install.packages("xlsx")
+library(xlsx)
+read.xlsx("file name.xlsx", 1, startRow = 1, endRow = 100)
+#文件名，第几个工作表，开始读取行，结束行
+write.xlsx(x, file = "rdata.xlsx", sheetName = "Sheet 1", append = T)
+#数据框名称，存储的文件名，工作表名称，是否追加写入
+```
+
+2. 读写R格式的文件
+
+
+
+
+#### Eg. 读入多个CSV文件并进行分析（Pork）
+```{r}
+# 读入多个csv文件（相同列结构）到一个数据框中
+# 方法一：笨办法，一个个读取然后存入一个数据框中
+a <- read.table("D:/R/mygit/learning/pork data/2007.csv")
+
+
+
+# 方法二：批量输入（循环）
+setwd("D:/R/mygit/learning")                                                                    # 设定工作目录
+a = list.files("D:/R/mygit/learning/pork data")                                       # list.files命令将pork data文件夹下所有文件名输入a
+dir = paste("./pork data/",a,sep="")  # 用paste命令构建路径变量dir,分隔符为默认"空格"
+n = length(dir)  # 读取dir长度，也就是文件夹下的文件个数
+pork.data = read.csv(file = dir[1], header=T,  sep=",")  #读入第一个文件内容（可以不用先读一个，但是为了简单，省去定义data.frame的时间，选择先读入一个文件。
+ for (i in 2:n){
+   new.data = read.csv(file = dir[i], header=T, sep=",")
+   pork.data = rbind(pork.data,new.data)
+ }
+# 循环从第二个文件开始读入所有文件，并组合到pork.data变量中
+write.csv(pork.data,file = "./pork data/sum.csv",row.names=F)  # 输出组合后的文件sum.csv到pork data文件夹
+
+
+# Qustions：读入文件没有相同列结构时怎么办？读入一个CSV文件(或xlsx文件)有多个sheet怎么办？
+# Note: 输入路径时一定要变成“/”
+```
+
+
+
+
+## 21. 数据转换（数据分析重点）(tidyr和dplyr包更前沿高效)
+
+1. 数据转换：数据结构的变化，例如添加、删除、修改、筛选、排序。
+
+```{r}
+# 读取数据
+library(xlsx)
+table_2019 <- read.xlsx("D:/R/project/mygit/learning/2019.xlsx", header = T, sheetIndex = 1)
+table_2019
+
+# 判断数据类型
+is.data.frame(table_2019)
+# Note: is系列函数：is.vector,is.array,is.character,is.list,is.na(查找是否包含NA数据)可查看是否为某种数据类型，如果不是，可再用as系列函数转换。比如：
+is.data.frame(state.x77)
+new_state.x77 <- as.data.frame(state.x77)
+is.data.frame(new_state.x77)
+
+# 数据转化（不同数据类型之间的转换）(可再尝试其他的转换)
+new_state1 <- data.frame(state.region,state.x77)
+new_state2 <- as.matrix(new_state1)
+is.matrix(new_state2)
+new_state2
+# Note:矩阵转化为数据框容易，但数据框转化为矩阵麻烦，因为矩阵只能为同种类型的数据，而数据框可以是不同类型的数据，但如果要强行转化，可能都会被转化为字符型数据
+
+# 更多关于is,as函数知识，可使用：
+methods(is)
+methods(as) 
+```
+
+2. 如何对数据取子集（取出数据固定行固定列进行分析）
+
+- **取子集：索引,逻辑值$**
+
+- **筛选：subset(),dplyr::filter()**
+
+- **抽样：sample()**
+
+```{r}
+# 读取数据
+table_sum <- read.csv("D:/R/project/mygit/learning/sum.csv", header = T)
+head(table_sum)
+
+# 取子集
+# 方法一：索引取子集（查索引和向量部分知识）
+table_1 <- table_sum[c(2182:2277),c(2,8,10,13,16,22,26,32)]  # 前行后列
+# 方法二：使用逻辑值$进行取子集
+table_2 <- table_sum$Trade.Flow  # 选出table_sum数据框中Trade.Flow这一列
+
+# 筛选(subset函数和filter函数最有用)
+# 方法一：利用逻辑值进行筛选，which函数存在错误  
+table_3 <- which(table_sum$Trade.Flow == "M")  
+# which(LETTERS == "R")选出R所在的位置
+# 按照Trade.Flow这一列对table_sum数据框进行筛选，选出是“M"的数据（并不是，which函数还不会用，要再学）
+View(table_3)
+# 方法二：dplyr
+library("tidyverse")
+names(table_sum)
+table_4 <- table_sum %>%
+  dplyr::filter(Trade.Flow=="M" ) %>%
+  dplyr::select(1:8)
+View(table_4)
+# 方法三：subset()函数(dplyr::select()比subset更强大)
+table_5 <- subset(table_sum,table_sum$Trade.Flow == "M")
+
+# 抽样(sample)
+?sample
+# sample(x, size, replace = FALSE, prob = NULL) 第一个参数被抽样元素所组成的向量，第二个参数是被抽取元素个数，第三个参数是有无放回的抽样(有放回则每个数可多次出现，默认无放回抽样)
+x <- c(1:100)
+sample(x,30,replace = T)
+sort(sample(x,30,replace = T))  #sort函数排序
+#对数据框进行抽样
+names(table_sum)
+table_6 <- sample(table_sum$Trade.Value..US..,100,replace = F)
+View(table_6)
+```
+
+3. 如何删除固定行的数据
+
+- **负索引,赋值NULL**
+
+```{r}
+# 方法一：负索引
+table_7 <- table_1[-1:-8,]  #查看负索引
+table_8 <- table_1[-2]  #默认索引是按列
+# 方法二：将不要的值赋值为NULL(相当于清空不要的数据)
+names(table_1)
+table_1$Year <- NULL
+```
+
+$$Note: names(),head(),View()函数都可查看数据，但第一个是查看变量名，第二个是看变量名和前几行数据，第三个是看所有数据$$
+
+
+
+4. 数据框的添加与合并（为数据框增加行和列）
+
+- **合并列：data.frame(),cbind()**
+
+- **合并行：rbind()**
+
+```{r}
+# 合并列，添加列
+# 方法一：data.frame()函数，必须要有相同的行数，不同则不能添加，如下：
+tbl_2007 <- read.csv("D:/R/project/mygit/pork/pork-data/2007.csv",header = T)
+tbl_2008 <- read.csv("D:/R/project/mygit/pork/pork-data/2008.csv",header = T)
+tbl_2009 <- read.csv("D:/R/project/mygit/pork/pork-data/2009.csv",header = T)
+tbl_2007_2009 <- data.frame(tbl_2007,tbl_2008,tbl_2009)
+# 相同行数时可添加
+exam1 <- read.table("D:/R/project/mygit/learning/exam1.txt",header = T)
+exam2 <- read.table("D:/R/project/mygit/learning/exam2.csv",header = T,sep = ",")
+exam3 <- data.frame(exam1,exam2)
+head(exam3)
+# 方法二：cbind()函数,col-bind，也必须有相同的列数，合并列
+?cbind
+exam4 <- cbind(exam1,exam2,exam3)
+
+#合并行：rbind()函数,raw-bind，必须要求新的数据和原来数据具有相同列名
+tbl_7_9 <- rbind(tbl_2007,tbl_2008,tbl_2009)
+head(tbl_7_9,20)  # 查看20行
+```
+
+5. 合并后重复数据处理方法
+
+- **unique()函数**
+
+```{r}
+# exam4就存在重复数据，重复列
+View(exam4)
+colnames(exam4)  # 看列名
+length(colnames(exam4))  # 看列名长度
+
+# 重复行的处理(最好用unique函数)
+data1 <- head(exam1,15)  #取前8行
+data2 <- tail(exam1,15)  #取后12行
+data3 <- rbind(data1,data2)
+# 方法一：duplicated()函数查看重复和非重复的行
+rownames(data3)
+length(rownames(data3)) 
+duplicated(data3)  # 查看行有没有重复
+# 当对函数模糊不清时，可以用??deplicated进行模糊搜索，得出相近、相似的duplicated为正确答案
+data4 <- data3[duplicated(data3),]  # 查看重复的部分
+data5 <- data3[!duplicated(data3),]  # 取出非重复的部分
+length(data3[!duplicated(data3),]) 
+
+# 方法二：unique()函数
+data6 <- unique(data3)
+View(data6)
+```
+
+6. 数据框的翻转
+
+- 在Excel中直接复制粘贴转置
+
+- **R：数据框：t()函数,向量：rev()函数**
+
+```{r}
+# 整体转置(数据框)：T()函数
+mtcarsT <- t(mtcars)
+mtcarsT
+
+# 单独转置(向量)：rev()
+letters  # 向量
+lettersT <- t(letters)  #再用t()函数就不正确
+lettersR <- rev(letters)
+women  # rev()函数也可以转置数据框，但比较麻烦
+rownames(women)  # 访问行名
+rev(rownames(women))  #翻转行名
+women[rev(rownames(women)),]  # 翻转后的行名作为索引
+```
+
+7. 修改数据框中的值
+
+- **transform()函数,dplyr::mutate()函数**
+
+```{r}
+# women数据框中height单位是英寸，转化为厘米，需对每个值×2.54 (不够高效)
+women$height*2.54  # 用逻辑值取出目标，是一个向量，再×2.54
+women[,1]*2.54  # 用索引取出目标，是一个向量
+data.frame(women$height*2.54,women$weight)
+
+# 方法二：transform(),可以修改任何列的值
+transform(women,height = height*2.54)
+transform(women,cm = height*2.54)  # 参数1：操作数据框对象，参数2：操作步骤
+
+# 线性编程法
+library(dplyr)
+women_new <- women %>%
+  mutate(height = 2.54*height)
+```
+
+8. 数据框的排序
+
+- **排序：向量sort(),order(),rank()**
+
+```{r}
+# 对单个条件进行排序
+sort(rivers)
+rev(sort(rivers))
+    # sort只能对向量进行排序，但也和转置一样，可以对向量的行和列单独排序，再通过索引的访问达到对整个数据框排序的效果
+
+order(rivers)
+rivers[8]
+    # order()返回的值是向量所在的位置，即索引，而不是排序后的结果。优势：索引值可以直接访问数据框，即间接对数据框进行排序了，比如：
+    # 按照mpg进行排序
+mtcars
+mtcars_new1 <- mtcars[order(mtcars$mpg),]
+    # 取order相反的顺序，在排序对象前加负：
+mtcars_new2 <- mtcars[order(-mtcars$mpg),]
+
+rank()
+    # rank()函数是求秩的函数，其返回值是向量对应元素的排名，涉及秩次概念
+
+# 对多个条件进行排序，再在order()中添加一个条件即可，即满足第一个参数条件下，排序再去满足第二个参数
+mtcars_new3 <- mtcars[order(mtcars$mpg,mtcars$carb),]
+```
+
+9. 如何对数据框进行数学计算
+
+- 加总：**sum()**
+
+- 均值：**mean()**
+
+- apply系列函数：**强大之处在于其参数FUN**
+
+```{r}
+WorldPhones  # 矩阵
+WorldPhones_new1 <- as.data.frame(WorldPhones)  # 转化为数据框
+names(WorldPhones_new1)
+rs <- rowSums(WorldPhones_new1)  # 每行加总
+cm <- colMeans(WorldPhones_new1)  # 每列取均值
+WorldPhones_new2 <- data.frame(WorldPhones_new1,cm)
+WorldPhones_new3 <- cbind(WorldPhones_new1,sum = rs)
+WorldPhones_new4 <- rbind(WorldPhones_new1,mean = cm)
+```
+
+```{r}
+include_graphics("D:/R/project/mygit/pic/apply.jpg")
+
+?apply  
+# apply(X, MARGIN, FUN,...)，参数1：数据操作对象，矩阵、数组、数据框；参数2：维度的下标，取值为1代表对行进行处理，取值为2代表对列进行处理。参数3：可以使用一个函数。
+apply(WorldPhones_new1,1,FUN = sum)
+apply(WorldPhones_new1,2,FUN = mean)
+
+?lapply()
+# lapply(X, FUN, ...)，l是list列表的意思，因此其返回值是列表形式
+state.center  # 列表，没有行和列之分，因此不需要编辑MARGIN
+lapply(state.center,FUN = length)  # 计算列表的长度
+class(lapply(state.center,FUN = length))  # class()函数用来检验数据结构，返回值是列表list
+
+?sapply()
+# sapply(X, FUN, ..., simplify = TRUE, USE.NAMES = TRUE)，s是simplify简化的意思，其返回值是向量或矩阵形式
+sapply(state.center,FUN = length)
+class(sapply(state.center,FUN = length))  # 返回值是向量integer
+
+?tapply
+# tapply(X, INDEX, FUN = NULL, ..., default = NA, simplify = TRUE)，参数2必须是一个因子数据类型，利用此因子对此数据进行分组
+state.name  # 字符串的向量
+class(state.name)
+state.division  #因子数据类型
+class(state.division)
+tapply(state.name,state.division,FUN = length)
+```
+
+10. 数据中心化(归一化)和标准化处理
+
+
+- 数据中心化：数据集中的各项数据减去数据集的均值
+
+$x-\mu$
+
+- 数据标准化：在数据中心化之后，再除以数据集的标准差
+
+$\frac{x-\mu}{\sigma}$
+ 
+> 数据中心化和数据标准化的意义是消除量纲对数据结构的影响，这样处理能向数据中心聚集
+
+- 数据中心化和标准化：**scale()**
+
+```{r}
+# 方法一：
+x <- c(1,2,3,9,2,6)
+x-mean(x)
+sd(x)
+(x-mean(x))/sd(x)
+
+# 方法二：
+?scale
+scale(x, center = TRUE, scale = TRUE)
+# center参数是做中心化处理，scale参数是做标准化处理
+heatmap(state.x77)  # 由于此数据集的不同数据差异很大，绘制出来的热图没有意义
+scale(state.x77,center = TRUE, scale = TRUE)
+
+
+
+
+# 线性编程法：为什么分开可以跑，合在一起不能？
+library(dplyr)
+M <- scale(state.x77,center = TRUE, scale = TRUE) %>%
+  heatmap(M)
+```
+
+
+
+## 22. reshape2
+
+- 用于数据结构的转换，可以将数据转化为任何需要的形式
+
+- 根据共有变量来合并**merge**
+
+- 《R语言实战》5.6.3
+
+```{r}
+x <- data.frame(k1=c(NA,NA,3,4,5),k2=c(1,NA,NA,4,5),
+                data=1:5)  # 用以学习给数据框的列赋名
+y <- data.frame(k1=c(NA,2,NA,4,5),k2=c(NA,NA,3,4,5),
+                data=1:5)
+x
+y
+
+# 合并数据框
+# 方法一：rbind cbind
+rbind(x,y)
+cbind(x,y)  # data列是共有的，用rbind和cbind来合并就乱了
+# 方法二：merge
+?merge  # merge(x, y, ...)可以根据一个或多个共有的变量来进行合并，合并中会将共有变量中的共有观测值进行合并，非共有的观测值变为NA
+merge(x,y,by="k1")  # 根据K1进行合并，首先合并x,y的k1中都有的4，5行，然后k1中x3，y2有值，因此接下来会让x1,x2,y1,y3进行组合，即x1y1,x1y3,x2y1,x2y3这4种组合。
+
+
+
+
+
+merge(x,y,by="k2",incomparables = T)  # 按k2列合并，并清除NA     ？？？没懂
+
+
+
+
+
+merge(x,y,by=c("k1","k2"))  # 根据k1,k2进行合并 
+
+install.packages("reshape2")
+help(package="reshape2")
+library(reshape2)
+melt()  # melt是数据融合的意思,把宽格式数据转化成长格式
+cast()  # 把长格式数据转化成宽格式,除了还原数据外，还可以对数据进行整合
+dcast()  # 输出时返回一个数据框,公式的左边每个变量都会作为结果中的一列，而右边的变量被当成因子类型，每个水平都会在结果中产生一列
+acast()  # 输出时返回一个向量/矩阵/数组
+airquality   # 纽约1973年5月到9月每天的空气质量情况数据
+head(airquality)   # 查看数据
+names(airquality) <- tolower(airquality)   # 将列名改成小写
+A <- melt(airquality)
+B <- melt(airquality,id.vars = c("Month","Day"))  # 构造id来识别
+C <- dcast(A,"Month" ~ variable,fun.aggregate = mean,na.rm = TRUE)
+```
+
+
+#-------------------------------------------------------------------#
+# Chapter1 ABCD                                                     #
+#-------------------------------------------------------------------#
+
+
+
+## 23. **tidyr**
+
+- 注意要看《R语言实战》和哈德利的自己对此包的解释
+
+- 用于数据转换，用来创建tidy data(整洁的数据)：每列是一个变量，每行是它的观测值，每个单元格都包含一个值
+
+- tidyr+dplyr包配合使用可以代替reshape2包
+
+```{r}
+library(tidyr)
+help(package = "tidyr")
+```
+
+- 主要有4个重要的函数：gather(要清楚如何调整列，将宽数据转化为长数据，类似reshape2里的melt，但gather可以让固定列不变，而其他列进行转换)，spread(将长数据转化为宽数据，类似reshape2中的cast)，unite(将多列合并为一列)，separate(将一列分成多列)
+
+```{r}
+# example(mtcars)
+mtcars  # tidy data
+data_e <- mtcars[1:10,1:3]
+data_e <- data.frame(names = rownames(data_e),data_e)   # 由于第一列汽车的名字是作为行名存在的，为了方便处理，给数据添加一列，将行名添加到数据中
+
+# gather(data,key,value,na.rm = FALSE,convert = FALSE,factor_key = FALSE)，data参数即为要操作的数据框；key参数为宽数据变为长数据时存放需要编码的变量的变量名称，需要自己定义一个新的名字；value参数是需要数据转换的变量的数值，也需要自己重新定义
+gather(data_e,key = "KEY",value = "VALUE",mpg,cyl,disp)  # 对mpg,cyl,disp这三列进行宽数据变换长数据
+gather(data_e,key = "KEY",value = "VALUE",mpg:cyl,disp)  # 设置冒号？？？ 
+gather(data_e,key = "KEY",value = "VALUE",mpg,cyl,-disp)  # 设置负号表示指定某一列不转换，同时还需要明白，当不转换的列值排完后会再重复排
+gather(data_e,key = "KEY",value = "VALUE",2:4)   # 如果敲列名容易出错，也可以写列的编号
+
+# spread(data,key,value,fill = NA,convert = FALSE)，key参数设置将哪一列打散，对应的值是value参数
+data_g <- gather(data_e,key = "KEY",value = "VALUE",2:4) 
+data_s <- spread(data_g,key = "KEY",value = "VALUE" )
+
+# separate和unite也是一对对应的函数,separate(data,col,into,sep = ""),data为数据框；col指定需要拆分的列；into是新建的列名，是字符串向量；sep是拆分列的分割符；
+df1 <- data.frame(x=c(NA,"a.b","a.c","b.c"))
+df_new1 <- separate(df1,col = x,into = c("X","Y"))# 将这一列按照"."分成两列，默认会识别分割符，为什么不设置sep="."，因为“.”在R中属于元字符，是正则表达式里的内容，代表任何字符，因此应为sep="\\."
+head(df_new1,4)
+df1 <- data.frame(x=c(NA,"a.b","a.c","b.c"))
+df_new1 <- separate(df1,col = x,into = c("X","Y"),sep = "\\.")
+head(df_new1,4)
+
+df2 <- data.frame(x=c(NA,"a.b-c","a-c","b-c"))
+df_new2 <- separate(df2,col = x,into = c("X","Y"))
+head(df_new2,4)  # 出了问题，第2个默认以"."分割，但c的值被丢掉了，这时就该指定分割符
+
+df3 <- data.frame(x=c(NA,"a.b-c","a-c","b-c"))
+df_new3 <- separate(df3,col = x,into = c("X","Y"),sep = "-")
+head(df_new3,4) 
+
+# unite函数
+unite(df_new1,col = "XY",X,Y,sep = "-")
+```
+
+
+## 24. **dplyr**(功能强大)
+
+- dplyr包不仅可以对单个表格进行操作，也可以对双表格进行操作
+
+- 查看dplyr包中函数
+```{r}
+library(dplyr)
+ls("package:dplyr")
+```
+- 对单个表格的操作
+
+```{r}
+help(package="dplyr")
+
+
+#dplyr包的数据转换常见函数
+
+## 根据给定条件进行过滤
+iris
+dplyr::filter(iris,Sepal.Length>7)
+## 因为dplyr包的函数太多了，可能会与其他包中的函数名字冲突，因此可以直接在函数前面加上包的名字，指定哪个包中的哪个函数
+
+## 去除重复行
+dplyr::distinct(rbind(iris[1:10,],iris[1:15,]))
+
+## 取出数据任一行，但取出来的子集不包括行名
+dplyr::slice(iris,10:15)
+
+## 随机取样
+dplyr::sample_n(iris,10)  # 随机抽取10行
+
+## 按比例随机抽取
+dplyr::sample_frac(iris,0.1)
+
+## 按照给定条件排序
+dplyr::arrange(iris,Sepal.Length)
+dplyr::arrange(iris,desc(Sepal.Length))  ##加上desc，按与默认相反的方向进行排序
+
+## 数据框取子集
+dplyr::select()  # 可根据列名来选择，也可通过各种限制条件来筛选，比subset()函数更强大
+## 以某些字符开头，以某些字符结尾，包含固定字符等可用select
+
+## 按一定条件对数据进行分组
+dplyr::group_by(iris,Species)
+
+## 添加新的变量
+tbl_new <- dplyr::mutate(iris,new = Sepal.Length+Petal.Length)
+head(tbl_new,20)
+
+
+# dplyr包中的统计函数
+
+## summarise系列函数做统计,reduces multiple values down to a single summary.
+summarise(iris,avg = mean(Sepal.Length))
+summarise(iris,sum = sum(Sepal.Length))
+
+```
+
+
+- **dplyr的链式操作符(%>%)**，用于实现将一个函数的输出传递给下一个函数，作为下一个函数的输入，在Rstudio中可以使用ctrl+shift+M输出
+
+```{r}
+head(mtcars,20) %>% 
+  tail(10)
+# 取出mtcars数据集的前20行，把这个输出结果作为下一个函数的输入，再取后10行，因此取出的是mtcars数据集的10-20行
+library(dplyr)
+iris %>% 
+  group_by(Species) %>% 
+  summarise(avg = mean(Sepal.Length)) %>% 
+  arrange(avg)  # 分组统计平均值并排序
+```
+
+
+- dplyr包对双表格的操作：主要是如何将两个表格进行整合(dplyr提供了多种合并方式(join函数)，包括left_join,right_join,inner_join,full_join)；数据集进行整合，包括intersect,union,setdiff
+
+```{r}
+
+# 表格的合并
+
+a <- data.frame(x1 = c("A","B","C"),x2 = c(1,2,3))
+b <- data.frame(x1 = c("A","B","D"),x3 = c(T,F,T))
+
+## 左连接(以左边的表为基础)
+dplyr::left_join(a,b,by = "x1")  # 第2张表的X1中第3行与第1张表不同，因此连接后第2张表中的x3的第3行为NA
+
+## 右连接
+dplyr::right_join(a,b,by = "x1")  # 第1张表的X1中第3行与第2张表不同，因此连接后第1张表中的x2的第3行为NA
+
+## 内连接(取交集)
+dplyr::inner_join(a,b,by = "x1")
+
+## 全连接(取并集)
+dplyr::full_join(a,b,by = "x1")
+
+## 半连接
+dplyr::semi_join(a,b,by = "x1")  # 相当于根据右侧表的内容对左侧表进行过滤，将a中与b的交集部分取出，和内连接有所类似，也有所区别
+
+## 反连接
+dplyr::anti_join(a,b,by = "x1")  # 根据右侧表对左侧表进行操作，但输出的是补集(相当于a表中除去半连接后的内容)
+
+
+# 数据集的合并
+new <- dplyr::mutate(mtcars,Model = rownames(mtcars))
+first <- dplyr::slice(new,1:20)
+second <- dplyr::slice(new,10:30)
+
+## 取交集
+intersect(first,second)
+
+## 取并集
+dplyr::union_all(first,second)  # 和rbind功能相似
+dplyr::union(first,second)  # 取非重复的并集
+
+## 取补集
+setdiff(first,second)  # 取first的补集
+setdiff(second,first)  # 取second的补集
+```
+
+
+
+## 25. R函数
+
+- R语言其实就是函数的集合
+
+- 要掌握R的内容，至少要掌握300个函数
+
+- 常见函数
+```{r}
+library("knitr")
+include_graphics("D:/R/project/mygit/pic/R_function.jpg")
+```
+
+
+- example
+
+```{r}
+state <- as.data.frame(state.x77[,c("Murder","Population","Illiteracy","Income","Frost")])
+fit <- lm(Murder ~ Population+Illiteracy+Income+Frost,data = state)
+```
+
+
+- 函数的输入数据类型和返回值:需要知道每个函数的输入值的类型和返回值的类型
+
+```{r}
+include_graphics("D:/R/project/mygit/pic/R_imput_character.jpg")
+ls()  # 列出当前环境中R的对象
+Sys.Date()  # 返回当前系统时间
+rm()  # 删除指定的变量、向量
+```
+
+
+
+## 26. 选项参数
+
+- 通过选项、参数了解函数如何使用
+
+- 让计算机进行操作，必须通过选项参数让计算机明白
+
+- 选项：质，表示选还是不选；参数：量，表示选了之后选多少
+
+```{r}
+ls("package:base")
+length(par())
+```
+
+- 函数选项可以分为三部分：1.输入控制部分(告诉用户函数能接受哪种类型的数据，往往放在函数第一位，比如file，也常有“...”表示参数可传递，这部分参数与另外函数的参数是相重合的，可以通用)；2.输出控制部分()；3.调节部分
+
+```{r}
+library("knitr")
+include_graphics("D:/R/project/mygit/pic/formal_option.jpg")
+include_graphics("D:/R/project/mygit/pic/adjusting_parameter1.jpg")
+include_graphics("D:/R/project/mygit/pic/adjusting_parameter2.jpg")
+```
+
+
+
+
+## 27. 数学统计函数(需要去熟读一本《统计学》)
+
+- 了解这些知识和分布的原因：给定一组数据，需要首先判断这组数据是否符合正态分布、卡方分布等。
+
+- 概率函数：概率论是统计学的基础，R有许多用于处理概率、概率分布以及随机变量的函数。R对每个概率分布都有一个简称，这个名称用于识别与分布相联系的函数。这部分涉及到许多统计学基础的理论知识，比如随机试验，样本空间，对立与互斥，随机事件与必然事件，概率密度，概率分布等。
+
+- d:density密度函数，p:distribution分布函数，q:quantile分位数，r：random随机
+
+```{r}
+library("knitr")
+include_graphics("D:/R/project/mygit/pic/probability_distribution.jpg")
+
+# -norm 正态分布函数(前加dpqr构成函数名)
+dnorm(x, mean = 0, sd = 1, log = FALSE)
+pnorm(q, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
+qnorm(p, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
+rnorm(n, mean = 0, sd = 1)
+x <- rnorm(100,mean = 15,sd = 2)
+qqnorm(x)
+
+# 离散函数的分布：binom、geom、hyper、nbinom、pois
+dbinom()
+pbinom()
+qbinom()
+rbinom()
+include_graphics("D:/R/project/mygit/pic/discrete_function.jpg")
+
+?Geometric    # 查询时必须用全称，且开头大写字母
+?Hypergeometric
+
+# R中生成随机数
+?stats::runif  #生成一个0-1之间的随机数
+dunif(x, min = 0, max = 1, log = FALSE)
+punif(q, min = 0, max = 1, lower.tail = TRUE, log.p = FALSE)
+qunif(p, min = 0, max = 1, lower.tail = TRUE, log.p = FALSE)
+runif(n, min = 0, max = 1)
+runif(50)
+runif(10)*10  # 生成0-1之外的数，但此法不高效
+runif(50,min = 1,max = 100)  # 生成取值为1-100的50个随机数
+
+# 生成随机数每次都要变，想要不变
+set.seed(123)
+runif(50,min = 1,max = 100)
+set.seed(123)
+runif(50,min = 1,max = 100)
+```
+
+
+
+## 28. 描述性统计函数
+
+- **几个统计包**：Hmisc、pastecs、psych
+
+```{r}
+# summary:提供最小值，最大值，四分位数和数值型变量的均值和因子向量和逻辑向量的节数统计等等
+mydata <- mtcars[c("mpg","hp","wt","am")]
+summary(mydata)
+fivenum(mydata$mpg)
+
+# install.packages("Hmisc")
+library(Hmisc)
+describe(mydata)  # 可以返回变量和观测值的数量，缺失值和唯一值的数目，平均值，分位数，5个最大值和5个最小值
+
+# install.packages("pastecs")
+library(pastecs)
+stat.desc(mydata)
+stat.desc(mydata,basic = T)
+stat.desc(mydata,desc = T)
+stat.desc(mydata,norm = T)
+
+# install.packages("psych")
+library(psych)
+describe(mydata)
+describe(mydata,trim = 0.1)  # 去除最低和最高10%的部分
+
+# 可以发现，Hmisc和psych包都有describe函数，如果两个包都安装，则运行的describe函数按照R的“后入为主”原则，后面载入的包的函数会覆盖前面载入的包的同名函数，直接前面加上包名即可
+Hmisc::describe()
+
+# 对函数进行分组描述
+library(stats)
+?stats::aggregate()  # R document https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/aggregate 对数据按照指定的分组信息进行统计，但一次只能用一个函数，即返回值只能有一个(有时多个返回值是有必要的)
+
+# install.packages("MASS")
+library(MASS)
+?Cars93   # 引入此数据集
+typeof(Cars93)
+names(Cars93)   # 发现有的列是字符型向量，无法进行计算，需要剔除掉
+Cars93[c("Min.Price","Price","Max.Price","MPG.city")]  # 名字索引访问列表
+aggregate(Cars93[c("Min.Price","Price","Max.Price","MPG.city")],
+          by = list(Manufacturer = Cars93$Manufacturer),mean)  # 按照制造商分组来对所挑选的变量进行均值计算
+aggregate(Cars93[c("Min.Price","Price","Max.Price","MPG.city")],
+          by = list(Manufacturer = Cars93$Manufacturer),sd)# 按照制造商分组来对所挑选的变量进行标准差计算
+
+aggregate(Cars93[c("Min.Price","Price","Max.Price","MPG.city")],
+          by = list(Origin = Cars93$Origin),mean)
+# 按照产地分组来对所挑选的变量进行均值计算
+aggregate(Cars93[c("Min.Price","Price","Max.Price","MPG.city")],
+          by = list(Origin = Cars93$Origin),sd)
+aggregate(Cars93[c("Min.Price","Price","Max.Price","MPG.city")],
+          by = list(Origin = Cars93$Origin,Manufacturer = Cars93$Manufacturer),mean)  # 按照制造商和产地分组来对所挑选的变量进行均值计算
+
+
+# install.packages("doBy")
+library(doBy)
+help(package="doBy")
+?summaryBy
+mydata <- mtcars[c("mpg","hp","wt","am")]
+summaryBy(mpg+hp+wt ~ am,data = mydata,FUN = mean)  # 直接写数据框中列的名字即可，不需要添加引号，不同变量之间用“+”表示，右侧变量为类别型的分组变量，data参数指定数据集，FUN参数指定函数，单也等同于以下函数
+aggregate(mydata[,c("mpg","hp","wt")],
+          by = data.frame(am = mydata$am),mean)
+
+# psych::describe.by 通过分组来计算
+help(package = "psych")
+library(psych)
+describeBy(mydata,list(am = mydata$am))  # 和describe.by一样的用法，适合详细查看每个分组的统计值，但给出的统计值(n,mean,sd等)是固定不变的，无法使用自定义的函数
+```
+
+
+
+
+## 29. 频数统计函数
+
+- 频数统计:进行分组统计，比较不同组之间的差异，而因子是专门用来分组的，有因子才能进行分组，有分组才能进行频数统计
+
+```{r}
+# 当数据集本身就有因子，则可直接分组
+mtcars  #cyl这列可根据数的不同来进行分组(除此之外，还有vs,am,gear,carb列)
+mtcars$cyl <- as.factor(mtcars$cyl)  # 将cyl列转化为因子
+split(mtcars,mtcars$cyl)  # 分组
+
+
+
+# 如果没有明显的因子
+
+## 一维频数统计
+cut(mtcars$mpg,c(seq(10,50,10)))  # 用cut函数对某一变量列进行切分，按照步长为10，切分(10，50)
+data1 <- table(mtcars$cyl)  # 频数统计
+data2 <- table(mtcars$mpg)
+data3 <- prop.table(data1)  # 计算频率函数(proportion比率)
+data4 <- data3*100  # 百分比的值
+
+
+## 二维数据框(二维列联表)的频数统计:给table函数输入两个因子即可
+
+###计算频数
+library(vcd)
+Arthritis   # treatment、sex、improved都可以作为因子
+#### 方法一
+table(Arthritis$Treatment,Arthritis$Improved)
+#### 方法二
+with(data = Arthritis,table(Treatment,Improved))
+#### 方法三
+?xtabs  # xtabs(formula = ~., data = parent.frame(), subset, sparse = FALSE,na.action, addNA = FALSE, exclude = if(!addNA) c(NA, NaN),drop.unused.levels = FALSE) formula可以根据不同的需要写成多种公式
+xtabs(~ Treatment+Improved,data = Arthritis)
+xtabs(~.,Treatment+Improved,data = Arthritis)  # 为什么这种写法得出的答案不对
+
+### 计算边际频数和比率
+?margin.table()  # 单独按照行和列进行统计
+x <- xtabs(~ Treatment+Improved,data = Arthritis)
+margin.table(x)  # 计算边际频率，所有的结果
+margin.table(x,1)  # 还需给定边际值，1代表行，2代表列
+prop.table(x,1)  # 频率比率
+
+
+## 三维列联表
+xtabs(~ Treatment+Improved+Sex,data = Arthritis)  # 结果看上去有点乱
+y <- xtabs(~ Treatment+Improved,data = Arthritis)
+ftable(y)  # 可以将结果转化为平铺式的列联表
+```
+
+
+## 30. 独立性检验函数(补《统计学》假设检验)
+
+- 独立性检验是根据频数信息判断两类因子彼此相关或相互独立的假设检验。所谓独立性就是指变量之间是独立的，没有关系。
+
+- R提供了多种检测类别型变量独立性的检测方法
+
+- 独立性检验算法：卡方检验、Fisher检验、Cochran-Mantel-Haenszel检验
+
+- 假设检验(Hypothesis Testing)是数理统计学中根据一定假设条件由样本推断总体的一种方法。
+
+- p value：通过计算得到的概率值，即假设原假设为真时，得到最大的或者超出所得到的检验统计量值的概率。一般p<0.05拒绝原假设，p>0.05接受原假设，一般P值越小，原假设越不靠谱，拒绝原假设，p值越大，原假设越靠谱，不拒绝原假设(最好看一下书，确定一下)
+
+```{r}
+# 卡方检验(chisq.test函数对二维表的行变量和列变量进行卡方独立性检验)
+library(vcd)
+Arthritis  # 做Treatment和Improved是否独立，如果独立，则无效果，如果不独立，则有效果
+mytable1 <- table(Arthritis$Treatment,Arthritis$Improved)
+?chisq.test  # 进行卡方独立性检验
+chisq.test(mytable1)  # p<0.05,拒绝原假设，说明两个变量不是独立的，治疗有效果
+mytable2 <- table(Arthritis$Sex,Arthritis$Improved)
+chisq.test(mytable2)  # p>0.05,不能拒绝原假设，说明两个变量是独立的，性别和效果无关
+
+# Fisher检验(精确检验，原理：假设边界固定的列联表中行和列是相互独立的)
+mytable3 <- xtabs(~ Treatment+Improved,data = Arthritis)
+fisher.test(mytable3)  # 与卡方检验的结果有一定差异，但也是显著的
+
+# Cochran-Mantel-Haenszel检验(原假设是：两个名义变量在第三个变量的每一层中都是条件独立的，不存在三阶交互作用)
+mytable4 <- xtabs(~ Treatment+Improved+Sex,data = Arthritis)  # 三维列联表，调整三个变量的顺序，在结果反映上是有差别的
+mantelhaen.test(mytable4)  # p<0.05，说明药物治疗和效果在每个性别水平上不独立的
+mytable5 <- xtabs(~ Treatment+Sex+Improved,data = Arthritis)
+mantelhaen.test(mytable5)
+```
+
+
+
+## 31. 相关性分析函数
+
+- 相关性分析是指对两个或多个具备相关性的变量元素进行分析，从而衡量两个变量因素的相关密切程度。相关性的元素之间需要存在一定的联系或者概率才可以进行相关性分析。简单来说就是变量之间是否有联系。
+
+- 相关性和独立性是相对的，两个变量不独立就必然相关。相关具有正相关、负相关，需要根据相关系数来确定。
+
+- 相关性衡量指标：Pearson相关系数、Spearman相关系数、Kendall相关系数、偏相关系数、多分格(polychoric)相关系数和多系数(polyserial)相关系数
+
+```{r}
+?cor  # 可以用此函数计算Pearson相关系数、Spearman相关系数、Kendall相关系数，具体使用哪种方法，可通过method参数来设置，默认Pearson；use参数用来设置如何对待缺失值
+state.x77  # 矩阵，推测谋杀率(Murder)与哪些因素有关
+cor(state.x77)
+# 解读：对角矩阵，自己与自己的相关系数是1，相关系数[-1,1],重点关注Murder，与生活期望(Life Exp)达到-0.78(负相关)，与文盲率(Illiteracy)相关系数达到0.70(正相关)
+?cov  # 计算协方差，衡量两个变量的总体误差，在计算偏相关时需要用到协方差的结果
+cov(state.x77)
+colnames(state.x77)
+x <- state.x77[,c(1,2,3,6)]
+y <- state.x77[,c(4,5)]
+cor(x,y)  # 只计算一组变量和另外一组变量之间的关系，不需要将两两变量都计算一次
+
+# install.packages("ggm")
+library(ggm)
+?pcor  # 偏相关系数，两个重要参数，数值向量u(向量前两个是要分析的变量，后面的是控制变量)，协方差结果S
+pcor(c(1,5,2,3,6),cov(state.x77)) # 控制收入水平，文盲率和高中毕业率，看人口和谋杀率的关系
+```
+
+
+
+## 32. 相关性检验函数
+
+- 在计算相关性系数之后，如何对此进行显著性检验(要量化)
+
+- 如果想在多于2个组之间进行比较：如果数据满足正态分布，可以使用方差分析；如果不满足正态分布，需要使用非参数检验
+
+- 非参数检验：称为Nonparametric tests，在总体方差未知或知道甚少的情况下，利用样本数据对总体分布形态等进行推断的方法。由于非参数检验方法在推断过程中不涉及有关总体分布的参数，因而得名为“非参数”检验
+
+
+```{r}
+# 一般数据的相关性检验
+?cor.test
+cor.test(state.x77[,3],state.x77[,5])  # 检测谋杀率与文盲率之间的关系
+
+library(psych)
+?corr.test()
+corr.test(state.x77)  # 不仅给出了相关系数，还给出了检测值
+
+library(ggm)
+?pcor.test()  # 与pcor函数对应的，进行偏相关检验
+x <- pcor(c(1,5,2,3,6),cov(state.x77))
+pcor.test(x,3,50)  # 第一个参数是计算出来的偏相关系数，第二个参数是要控制的变量数，第三个参数是样本数(返回三个值：t检验值，自由度，p值)
+
+
+# 分组数据的相关性检验
+?t.test
+library(MASS)
+UScrime  # 数据集
+t.test(Prob ~ So,data = UScrime)  # t.test(y ~ x(二分型变量),data = 数据集)
+```
+
+
+
+
+## 33. 绘图函数
+
+### 33.1 数据可视化软件介绍
+
+1. 不编程(BI工程师至少要会2种可视化工具)：
+
+- **Tebleau**(知名软件，商业数据可视化软件，菜单式，较贵，14天免费试用，有部分破译版)
+
+[Tebleau Desktop Pro(10-5-0)](https://mp.weixin.qq.com/s/LlWf1ivpkcABctbZjnGt5Q)
+
+- PowerBI(和Tebleau类似，但稍便宜)
+
+- **FineBI**（国内软件，个人版免费，一天可学习完）
+
+[30分钟上手FineBI](https://b23.tv/yrzVGG)
+
+[实战1](https://b23.tv/FaLd42)
+
+[实战2](https://b23.tv/e1Bn0e)
+
+2. 要编程(数据分析师+BI工程师:R+Python)：
+
+- **R: ggplot2包**
+
+[ggplot2 Elegant Graphics for Data analysis-2016.pdf(Hadley)]()
+
+[R-Data_Analysis_and_Visualization-2016.pdf(A course in five modules)]()
+
+[Fundamentals of Data Visualization(Claus O. Wilke),ed](https://clauswilke.com/dataviz/index.html)
+
+[Visualization(Stanford Data Lab),ing](https://bookdown.org/skaltman/visualization-book/)
+
+- **Python: Plotly库**(交互式开源数据可视化框架，具有python、R、JavaScript等语言的API接口)
+
+
+### 33.2 绘图函数
+
+1. R中内置大量的绘图函数
+
+2. 对于R绘图，最重要的是要知道绘图输入数据的格式
+
+- 散点图：x和y两个坐标数据
+
+- 直方图：因子
+
+- 热力图：数据矩阵
+
+3. R语言四大作图系统：1.基础绘图系统；2.lattice包；3.ggplot2；4.grid包
+
+- R基础绘图系统
+
+A. 高级绘图：高级绘图是一步到位，可以直接绘制出图，创建一个新的图像；
+
+B. 低级绘图：不能单独使用，必须在高级绘图产生图形的基础上，对图形进行调整，比如加一条线、加上标题文字等。
+
+```{r}
+# 基础绘图函数
+# install.packages("graphics")
+ls("package:graphics")  # 查看graphics包中函数
+demo(graphics)  # 查看graphics包可以绘制出来的图像
+help(package = "graphics")
+demo(persp)
+x11()  # 打开绘图窗口
+dev.list()  # 查看打开的绘图设备
+dev.off()  # 关闭绘图设备
+split.screen()  # 分割当前的绘图设备，方法一
+erase.screen()  # 删除最后绘制的图形
+layout(matrix(1:4, 2, 2))  # 分割设备，方法二
+exam1 <- matrix(1:4,2,2)
+exam1
+exam2 <- layout(exam1)
+layout.show(exam2)
+```
+
+C. 两个最基础最重要的绘图函数
+
+```{r}
+# 最基础的绘图函数
+library(knitr)
+include_graphics("../pic/graphic_function.jpg")
+
+## plot
+?plot  # 输入数据格式：散点图：数值(向量)；直方图：因子；箱线图：因子+数值；散列图：数值+因子；脊柱图：因子+因子；
+plot(women$height,women$weight)  # 关系图（与下一个公式x与y换了）
+sunflowerplot(women$height,women$weight)  # 同上
+plot(women$height ~ women$weight)
+plot(as.factor(women$height))
+plot(mtcars$cyl)
+plot(as.factor(mtcars$cyl))
+plot(as.factor(mtcars$cyl),mtcars$carb)
+plot(mtcars$carb,as.factor(mtcars$cyl))
+plot(as.factor(mtcars$carb),as.factor(mtcars$cyl))
+fit <- lm(height~weight,data = women)  # 线性回归lm
+plot(fit)
+
+## par
+?par  # 并不能用来画图，是parameters的简称，是对绘图参数进行设置的，可用par函数进行全局设置，也可以在绘图函数中进行设置。
+plot(as.factor(mtcars$cyl),col = c("red","green","blue"))
+```
+
+D. 到底plot支持什么数据格式？函数如何识别不同类型的数据？涉及R函数的**S3方法**：
+
+a. S3是R中面向对象编程的一个概念，是指R中每个对象可以添加很多属性
+
+b. S3方法指函数中的属性、泛型函数、方法的内容
+
+c. plot是一个家族，支持多种属性的数据格式，同样summary和print也是如此
+
+```{r}
+methods(plot)
+methods(summary)
+methods(print)
+```
+
+4.词云
+```{r}
+# install.packages("wordcloud2")
+library(wordcloud2)
+demoFreqC <- read.csv("D:/R/project/mygit/learning/demoFreqC.csv")
+wordcloud2(demoFreqC)
+wordcloud2(demoFreqC,size = 0.8,shape = "pentagon")
+wordcloud2(demoFreqC,size = 0.6,shape = "star")
+```
+
+
+
+## 34.图形初阶（数据可视化）
+
+### 34.1 使用图形
+
+[他人实践](https://zhuanlan.zhihu.com/p/25372460)
+
+```{r}
+pacman::p_load(Hmisc, RColorBrewer)
+attach(mtcars) #获取系统自带数据框mtcars
+plot(wt ~ mpg)  #创建图形，车身重量wt为横轴，每加仑汽油行驶英里数（耗油量）mpg为纵轴
+abline(lm(mpg ~ wt))  #函数abline表示画一条直线，嵌套的函数lm是线性回归函数
+#函数abline()可以在图上加直线，其使用方法有四种格式。（1）abline(a,b)，表示画一条y=a+bx的直线（2）abline(h=y)，表示画出一条过所有点得水平直线（3）abline(v=x)，表示画出一条过所有点的竖直直线（4）abline(lm.obj)，表示绘出线性模型得到的线性方程
+title("Regression of MPG on Weight")  #显而易见，这是图形的标题
+detach(mtcars) #解除绑定数据框mtcars
+```
+
+
+
+### 34.2 一个简单的例子
+### 34.3 图形参数
+### 34.4 添加文本，自定义坐标轴和图例
+### 34.5 图形的组合
+
+
+## 35. 自定义函数
+
+- R的内置函数不足以满足自己的需求时，可以自己创建函数或者扩展包
+
+- 自己编写的函数+特定的数据集+文档组合，构成了R的扩展包(R编程)
+
+- 在R中输入函数名字，不加括号，则会出现R的函数的源代码(可以多看看，积累R语言编程知识)
+
+```{r}
+cor
+```
+
+- 但也不是所有函数输入函数名字就能出来源代码，有的被封装起来了
+
+```{r}
+sum
+mean
+```
+
+### 35.1 R的自定义函数
+
+a. 函数名称：1.函数命令与功能相关；2.可以是字母与数字的组合，但必须是字母开头
+
+b. 函数声明：利用function函数来声明
+
+```{r}
+myfun <- function(选项参数)
+{
+  函数体
+  }  # 函数最重要的地方，往往包括很多逻辑判断和循环等
+
+```
+
+c. 函数参数
+
+d. 函数体
+
+- example：计算偏度和峰度函数
+
+a. 偏度(skewness)：是统计数据分布偏斜方向和程度的度量，是统计数据分布非对称程度的数字特征；
+
+b. 峰度(peakedness)：又称峰态系数。表征概率密度分布曲线在平均值处峰值高低的特征数。
+
+```{r}
+myfun <- function(x,na.omit = FALSE){
+  if(na.omit)
+    x <- x[!is.na(x)]
+  m <- mean(x)
+  n <- length(x)
+  s <- sd(x)
+  skew <- sum((x-m^3)/s^3)/n
+  peak <- sum((x-m^4)/s^4)/n-3
+  return(c(n = n,mean = m,stdev = s,skew = skew,peak = peak))
+}  
+# x:要计算的数据，是一个数值向量；第二个参数是删去缺失值
+x <- 1:10
+myfun(x)
+```
+### 35.2 循环与向量化操作
+
+- 函数内部通过循环来实现向量化操作
+
+- R中的循环：1.if条件判断；2.for循环；3.while循环；4.switch语句等
+
+- 一个完整的循环结构：1.条件判断，是真或者假；2.用于循环执行的结构；3.表达式
+
+```{r}
+# for循环
+for(i in 1:10){
+  print("Hello World")
+}
+# for循环详解
+for(index in vector){
+  code
+}
+#for、in都是关键词，会用不同颜色标注出来，是不能被修改的。index是占位符，可以是i,j,k等等,可自命名，vector是一个向量，是想要进行逐一变例的向量的名字，大括号中是循环需要执行的代码。即这个index会变成vector向量中的第一个元素，去执行code里面的代码，结束后，这个index会自动变成vector的第二个元素取执行循环体中的代码。注意index是变成向量中的元素，而不是变成向量中元素的位置。
+
+# Example 01
+counter <- 0
+for(myindex in 4:6){
+  counter <- counter+1
+  cat("the",counter,"number is",myindex,"\n")
+}
+# "\n"是换行的意思
+
+# Example 02
+counter <- 0
+myvector <- 4:6
+for(myindex in 1:length(myvector)){
+  counter <- counter+1
+  cat("the",counter,"number is",myvector[myindex],"\n")
+}
+# 有缺陷，如果myvector为0，则会一直在1，0之间循环
+
+# Example 03
+counter <- 0
+myvector <- 4:6
+for(myindex in seq_along(myvector)){
+  counter <- counter+1
+  cat("the",counter,"number is",myvector[myindex],"\n")
+}
+# 此时如果myvextor为0，则seq_along会产生一个空向量，就不会再继续循环了
+
+# Example 04：涉及赋值函数的for循环
+counter <- 0
+myvector <- 4:6
+newvector <- numeric(length(myvector))
+for(i in seq_along(myvector)){
+  counter <- counter+1
+  cat("the",counter,"number is",myvector[i],"\n")
+  newvector[i] <- myvector[i]
+}
+print(newvector)
+
+# while循环
+i = 1;while(i <= 10){
+  print("Hello World");
+  i = i+1
+}
+# 如果没有i=i+1，则控制不了循环次数，会一直print，导致电脑死机，按ESC终止
+
+# 条件执行：if...else...
+score = 70
+if(score > 60){print("Passed")} else{print("Failed")}
+# ifelse简写
+score <- 50
+ifelse(score > 60,print("Passed"),("Failed"))
+
+# 如果条件有多种情况，不是简单地真或假，则用switch
+score <- c(100,65,75,45,85)
+for(i in score)
+  print(
+    switch(i,
+          80 <= A <=100,
+          70 <= B <80,
+          60 <= C <70,
+          D <60
+          )
+  )
+```
+- [R switch() Function](https://www.datamentor.io/r-programming/switch-function/)
+
+- [java: How can I use a switch() statement to convert from a numeric to a letter grade?](https://stackoverflow.com/questions/1535076/how-can-i-use-a-switch-statement-to-convert-from-a-numeric-to-a-letter-grade)
+
+
+
+
+## 36. 线性回归(补《计量经济学》)
+
+1. 回归，regression，通常指那些用一个或多个预测变量(自变量、解释变量)，来预测响应变量(因变量、被解释变量)的方法。
+
+2. 回归的类型
+
+```{r}
+getwd()
+library(knitr)
+include_graphics("../pic/regression_character.jpg")
+```
+
+3. 普通最小二乘回归法(OLS)
+
+```{r}
+include_graphics("../pic/OLS.jpg")
+```
+
+- Example
+
+```{r}
+women
+plot(women$height,women$weight)  # 画图来看两者之间的大致关系
+?lm  # lm(formula, data, subset, weights, na.action, method = "qr", model = TRUE, x = FALSE, y = FALSE, qr = TRUE, singular.ok = TRUE, contrasts = NULL, offset, ...)
+fit <- lm(weight ~ height,data = women)
+fit  # fit常用来表示结果
+```
+
+
+## 37. 多元线性回归
+
+
+
+## 38. 回归诊断
+
+## 39. 方差分析
+
+## 40. 功效分析
+
+## 41.
+
+
+

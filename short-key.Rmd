@@ -1,0 +1,48 @@
+---
+title: "shortcut-key"
+author: "xsl"
+date: "2021/1/4"
+output: html_document
+---
+
+# 常规
+
+Ctrl+Z: 撤销
+
+Ctrl+X: 剪切
+
+Ctrl+C: 复制
+
+Ctrl+V: 粘贴
+
+Ctrl+D: 删除行
+
+Ctrl+A: 全选
+
+Ctrl+O: 打开文件
+
+Ctrl+S: 保存
+
+Ctrl+F: 查找并替换
+
+Ctrl+=: 替换并查找
+
+# Markdown
+
+Ctrl+Shift+H：Knit to Html
+
+**Ctrl+Shift+Y：在Html中预览**
+
+Ctrl+Shift+R：插入代码段
+
+**Ctrl+Shift+C：注释/取消注释**
+
+Ctrl+Shift+W：关闭所有打开文件
+
+**Ctrl+Alt+I：插入块**
+
+Ctrl+Alt+C：运行当前代码块
+
+Ctrl+Alt+N：运行下一个代码块
+
+Ctrl+Enter: 运行光标所在的代码行

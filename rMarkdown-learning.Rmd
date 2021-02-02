@@ -1,0 +1,101 @@
+---
+title: "rMarkdown-learning"
+author: "xsl"
+date: "2020/12/5"
+output:
+  html_document:
+    df_print: paged
+---
+
+# 1. 参考文献
+
+- R Markdown: The Definitive Guide(Yihui Xie) (https://bookdown.org/yihui/rmarkdown/)
+
+- RMarkdown (https://home.huhuaping.com/R-learning/01-Rmarkdown-intro.html)
+
+- Rmarkdown语言入门 (https://home.huhuaping.com/R-learning/01-Rmarkdown-intro.html)
+
+- Latex特殊符号、公式、颜色整合 (https://blog.csdn.net/shuqiaos/article/details/82995542)
+
+# 2. rMarkdown简要公式讲解
+
+## 2.1 行内公式(inline equation)
+
+- 行内公式就是在一行正常文字内插入公式，采用一对美元符号内写Latex的形式（$LaTex$）
+
+- 加减乘除：+-*/
+
+- 分数：$\frac{m}{n}$
+
+- 绝对值：$\frac{\lvert a \rvert}{\lvert a \rvert+\lvert b \rvert}$
+
+- 加总：$\sum{x}$   $\sum_i^j{\frac{x_n}{y_n}}$
+
+- 上下角标：$x_i$   $x^j$   $x_i^j$   $x_{ij}^{\alpha\beta}$
+
+- 上标
+
+1. $\hat{x}$
+
+2. $\bar{x}$
+
+3. $\beta^{\ast}$
+
+- 点：
+
+1. $x\prime$
+
+2. $\cdot$
+
+3. $\cdots$
+
+- 箭头
+
+1. $\rightarrow$
+
+2. $\Rightarrow$
+
+> Note:
+1. 所有letex的公式语言前需要加上"\"
+2. 常见希腊字母的写法 https://wk.baidu.com/view/bd33c37b7fd5360cba1adb98
+
+- Alpha
+
+- beta
+
+- gamma
+
+- delta
+
+- epsilon
+
+- zeta
+
+- lambda
+
+- mu
+
+- sigma
+
+## 2.2 独立公式(LaTex equation)
+
+-有一个框，也可以将要框住的内容用此形式
+
+- 采用一对双美元符号内写Latex公式的形式：$$LaTex equation$$
+
+$$Note:要了解基本的Latex知识、希腊字母体系，以及统计和计量的基本知识。$$
+
+# 3. 一些页面格式符号
+
+- 粗体以一对双星符号括住的形式表达(**字符**)
+
+- 上标以一对尖帽符号包括的形式表达(^字符^)
+
+- 下标以一对波浪符号括住的形式表达(~字符~)
+
+- 无序列表(- )
+
+- 有序列表(1. )
+
+
+

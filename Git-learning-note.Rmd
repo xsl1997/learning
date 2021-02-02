@@ -1,0 +1,162 @@
+---
+title: ''
+author: "xsl"
+date: "2020/11/25"
+output: html_document
+---
+
+# 1. git学习材料
+
+- [Pro git](https://git-scm.com/book/zh/v2)
+
+- [fork](https://docs.github.com/cn/free-pro-team@latest/github/getting-started-with-github/fork-a-repo)
+
+- [git基本操作学习](https://home.huhuaping.com/project/internal-project/)
+
+- [Git bash操作](https://www.cnblogs.com/ccw869476711/p/10818131.html)
+
+# 2. git安装和配置
+
+- 下载git bash到本地电脑
+
+- 在本地电脑安装git bash——强烈建议默认安装路径
+
+- 进入github官网申请一个github账号
+
+建议使用高校邮箱（可以建立私有仓库啊，完成你的秘密项目）
+
+# 3. git操作基础
+
+## 3.1 准备工作
+
+- 准备本地电脑上的工作文件夹。工作文件夹最好不要设在系统盘，如c盘。——系统重装可能就麻烦了！
+
+- 文件夹命名不要出现中文。
+
+- 在Git Bash窗口，并输入如下代码（这是告诉git，请进入工作文件夹吧）：
+
+$ cd /d/R/project/mygit/learning
+
+## 3.2 (clone)克隆一个github仓库
+
+- 把别人的文档克隆到自己的仓库里(在线仓库/本地)
+
+### 3.21 (fork)复刻到在线仓库
+
+- 打开想要克隆的仓库，打开自己的github，点击别人仓库的fork。（复刻到自己的在线仓库）
+
+### 3.22 (clone)克隆到本地，注意要先弄好SSH码
+
+1. 代码(一般代码，可分为以下两种) 
+
+$ git clone + SSH
+
+- 从自己的在线仓库克隆到本地 
+
+$ git clone git@github.com:xsl1997/agri-trade-open.git (打开自己已经复刻的在线仓库的SSH)
+
+- 把别人的在线仓库克隆到本地 
+
+$ git clone git@github.com:huhuaping/agri-trade-open.git（打开别人的在线仓库的SSH）
+
+### 3.23 同步更新fork文档
+
+1. 进入自己克隆文件的本地文件夹(进入git的工作文件夹)
+
+$ cd /d/R/project/agri-trade-open
+
+2. 查看远程主机状态
+
+$ git remote -v
+
+3. 查看原文件远程更新状态（已知更新时，可以不用输入此代码）
+
+$ git remote add upstream git@github.com:huhuaping/agri-trade-open.git
+
+4. 抓取原文件的更新信息
+
+$ git fetch upstream
+
+5. 合并上游更新信息到本地
+
+$ git merge upstream/master
+
+6.推送到自己的github仓库
+
+$ git push
+
+# 4. R文件推送
+
+> 直接在R工作台操作
+
+*要搞清楚：为什么会导致Github仓库存在先一个文档，然后又在里面的文件夹中又有一个文档*
+
+1. 检查所有新增文件
+
+$ git add .
+
+2. 检查本地更新状态
+
+$ git status
+
+3. 提交更改
+
+$ git commit -m"change git(可自己随意取名)"
+
+4. 推送到github
+
+$ git push
+
+# 5.Github忽略某个目录或者文件上传
+
+学习网址：https://blog.csdn.net/qq_41812254/article/details/103161133
+
+1. 在目录中创建gitignore文件
+
+$ touch .gitignore
+
+2. 在gitignore文件中输入不想上传的文件名，保存，再push
+
+- *.a  #忽略所有.a结尾的文件
+
+- !lib.a  #但lib.a除外
+
+- /TODO  #仅仅忽略项目根目录下的TODO文件
+
+# 6.删除
+
+学习网址：https://blog.csdn.net/ingenuou_/article/details/107452638
+
+1. 删除仓库
+
+进入仓库详情，点击setting，Danger Zone， Delete
+
+
+2. 删除仓库里某个文件
+
+$ git pull origin master  #将远程仓库里面的项目拉下来
+
+$ dir  #查看有哪些文件夹
+
+$ git rm -r --cached 169.\ Majority\ Element  #删除169.\ Majority\ Element文件夹
+
+$ git commit -m '删除了169.\ Majority\ Element'  #提交,添加操作说明
+
+$ git push -u origin master  #将本次更改更新到github项目上去
+
+
+3. 已经push的文件
+
+- 删除本地缓存
+
+- 提交改变
+
+$ git rm -r --cached .
+
+$ git add .
+
+$ git commit -m 'update .gitignore'
+
+
+
+

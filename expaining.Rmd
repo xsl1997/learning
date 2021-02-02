@@ -1,0 +1,27 @@
+---
+title: "expaining"
+author: "xsl"
+date: "2020/12/10"
+output: word_document
+---
+
+# 
+```{r}
+#抓取中国畜牧业信息网数据
+
+library(rvest)
+library(tidyverse)
+library(dplyr)
+library(readr)
+
+url <- "http://www.caaa.cn/market/zs/xml/2/3.xml?&XMLCallDate=1607419422888"
+tbl_raw <- readr::read_lines(url) %>%
+  as_tibble() %>% 
+  filter(str_detect(value, "point x")) %>%
+  mutate(ym = str_extract(value, "(?<=x=\")(.+?)(?=\")"),
+         price = str_extract(value,"(?<=y=\")(.+?)(?=\")")) %>%
+  select(-value) %>% 
+  add_column(., index = 1:nrow(.), .before = "ym")
+write.csv(tbl_raw,file = "C:/Users/Administrator/Desktop/pork-price.csv")
+```
+
